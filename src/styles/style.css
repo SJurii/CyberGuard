@@ -119,13 +119,3 @@ header {
     color: #d0d0d0;
     margin-bottom: 15px;
 }
-
-.page{
-    position: absolute;
-}
-.page-enter-active {
-    animation: fadeOut 1s forwards;
-}
-.page-exit-active {
-    animation: fadeIn 1s forwards;
-}
