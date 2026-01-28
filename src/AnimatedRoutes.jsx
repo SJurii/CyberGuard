@@ -7,7 +7,7 @@ import ScenarioSMS from "./pages/scenario_sms";
 const pageVariants = {
   initial: {
     opacity: 0,
-    x: -40,
+    x: -50,
   },
   animate: {
     opacity: 1,
@@ -15,7 +15,7 @@ const pageVariants = {
   },
   exit: {
     opacity: 0,
-    x: 40,
+    x: 50,
   },
 };
 
