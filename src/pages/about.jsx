@@ -7,7 +7,7 @@ import { NavLink } from 'react-router-dom';
 function About() {
   return (
     <>
-      <header>
+      <header className="header">
         <h1 className="header_text">
           Безопасность в цифровом пространстве
         </h1>

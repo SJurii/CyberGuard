@@ -1,0 +1,45 @@
+.sms-chat {
+  max-width: 420px;
+  margin: 0 auto;
+  background: #0f172a;
+  padding: 20px;
+  border-radius: 20px;
+}
+
+.sms-bubble {
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 14px;
+  color: white;
+}
+
+.sms-bubble.sender {
+  background: #1e293b;
+}
+
+.sms-bubble.system {
+  background: #065f46;
+}
+
+.sender-name {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.choice-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.choice-btn {
+  padding: 10px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+}
+
+.choice-btn.danger {
+  background: #7f1d1d;
+  color: white;
+}

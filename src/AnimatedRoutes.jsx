@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import About from "./pages/about";
 import ScenarioSMS from "./pages/scenario_sms";
+import FakeSmsChat from "./pages/scenarioSms/fake_sms_chat";
 
 const pageVariants = {
   initial: {
@@ -59,7 +60,23 @@ function AnimatedRoutes() {
             </motion.div>
           }
         />
+
+        <Route
+          path="/scenario/sms"
+          element={
+            <motion.div
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition={pageTransition}
+            >
+              <FakeSmsChat />
+            </motion.div>
+          }
+        />
       </Routes>
+
     </AnimatePresence>
   );
 }
