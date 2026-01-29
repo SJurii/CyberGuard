@@ -1,0 +1,161 @@
+header {
+    padding: 0px 60px;
+}
+
+h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.header_text {
+    color: #ffffff;
+    font-size: 42px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-align: center;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    padding: 15px;
+    border-radius: 25px;
+
+}
+
+body {
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #ffffff;
+    min-height: 100vh;
+    font-family: 'Arial', sans-serif;
+}
+.back_image {
+    background: url(../assets/sms_attack_main_2.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.main_container-sms {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    padding: 40px;
+    gap: 40px;
+}
+
+.side-text-leader {
+    width: 50%;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #d0d0d0;
+    margin-bottom: 15px;
+}
+
+.sms-attack-info {
+    color: #ffffff;
+    padding: 60px;
+    max-width: 800px;
+    width: 50%;
+    margin: 20px;
+    left: 0;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(15px);
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.wripper {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.sms-attack-info p, .sms-attack-info li{
+    font-size: 20px;
+    line-height: 1.8;
+    text-align: justify;
+    font-family: 'Arial', sans-serif;
+
+}
+
+.sms-attack-image{
+    width: 70%;
+    height: auto;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+
+.image_phishing_example {
+    display: flex;
+    justify-content: center;
+    margin: 40px 0;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(15px);
+    padding: 20px;
+    border-radius: 25px;
+}
+.buttom_to_test {
+    padding: 60px;
+    width: 90%;
+    margin: 20px;
+    left: 0;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(15px);
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+
+}
+.buttom_to_test p {
+    font-size: 20px;
+    line-height: 1.8;
+    text-align: justify;
+    font-family: 'Arial', sans-serif;
+}
+
+.start-btn {
+    background:  #ff512f;
+    background: linear-gradient(90deg, #ff512f, #dd2476);
+    border: none;
+    padding: 15px 35px;
+    font-size: 18px;
+    color: white;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.start-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgb(241, 67, 67);
+}
+
+ul {
+    padding-left: 30px;
+}
+
+.leader-btn{
+    background: #00c6ff;
+    background: linear-gradient(90deg, #00c6ff, #0072ff);
+    border: none;
+    padding: 12px 30px;
+    font-size: 17px;
+    color: white;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-right: 15px;
+}
+.start-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgb(241, 67, 67);
+}
+.leader-btn:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 3px 25px rgb(0, 126, 255);
+}
+.btn-sms {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
