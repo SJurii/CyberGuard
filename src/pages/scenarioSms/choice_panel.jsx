@@ -1,13 +1,9 @@
-export default function ChoicePanel({ choices, onSelect }) {
+export default function ChoicePanel({ answers, onSelect }) {
   return (
-    <div className="choice-panel">
-      {choices.map((choice, index) => (
-        <button
-          key={index}
-          className={`choice-btn ${choice.risk ? "danger" : ""}`}
-          onClick={() => onSelect(choice)}
-        >
-          {choice.label}
+    <div className="choices">
+      {answers.map((a, i) => (
+        <button key={i} onClick={() => onSelect(a)}>
+          {a.text}
         </button>
       ))}
     </div>

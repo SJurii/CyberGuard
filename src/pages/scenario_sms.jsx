@@ -102,7 +102,7 @@ const ScenarioSMS = () => {
 
             <NavLink 
               className="leader-btn" 
-              to="/scenario/sms">
+              to="/scenario/sms/interesting_sc">
                 Начать сценарий
             </NavLink>
 
