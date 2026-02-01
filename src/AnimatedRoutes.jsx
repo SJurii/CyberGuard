@@ -62,19 +62,21 @@ function AnimatedRoutes() {
         />
 
         <Route
-          path="/scenario/sms"
-          element={
+          path="/scenario/sms/:scenarioId"
+            element={
             <motion.div
               variants={pageVariants}
               initial="initial"
               animate="animate"
               exit="exit"
               transition={pageTransition}
-            >
+            >       
               <FakeSmsChat />
             </motion.div>
-          }
-        />
+        }
+/>
+
+
       </Routes>
 
     </AnimatePresence>
