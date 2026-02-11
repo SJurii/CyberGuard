@@ -1,68 +1,87 @@
-.sms-chat {
+/* ===== ОБЩИЙ КОНТЕЙНЕР ЧАТА ===== */
+.sms-chat, .chat-container {
   max-width: 420px;
   margin: 20px auto;
-  background: #0f172a;
+  background: #f9fafb; /* светлый фон */
   padding: 20px;
-  border-radius: 20px;
+  border-radius: 25px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #1f2937;
 }
 
-.sms-bubble {
-  padding: 12px;
-  margin-bottom: 10px;
-  border-radius: 14px;
-  color: white;
+/* ===== ПУЗЫРИ СООБЩЕНИЙ ===== */
+.sms-bubble, .bubble {
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  border-radius: 18px;
+  line-height: 1.5;
+  max-width: 80%;
+  word-wrap: break-word;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
-.sms-bubble.sender {
-  background: #1e293b;
+/* Бот / система */
+.sms-bubble.system, .bubble.bot {
+  background: #e0f2fe; /* светлый голубой */
+  color: #0369a1;
 }
 
-.sms-bubble.system {
-  background: #065f46;
+/* Пользователь */
+.sms-bubble.sender, .bubble.me {
+  background: #fef3c7; /* светлый персиковый */
+  color: #92400e;
+  text-align: right;
+  margin-left: auto;
 }
 
+/* Имя отправителя */
 .sender-name {
   font-size: 12px;
-  opacity: 0.7;
+  opacity: 0.6;
+  margin-bottom: 4px;
 }
 
-.choice-panel {
+/* Панель выбора вариантов */
+.choice-panel, .choices {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+  margin-top: 10px;
 }
 
-.chat-container {
-  max-width: 420px;
-  margin: auto;
-  background: #0f172a;
-  padding: 20px;
-  border-radius: 20px;
-  color: white;
-}
-
-.bubble {
-  padding: 10px;
-  border-radius: 14px;
-  margin-bottom: 10px;
-}
-
-.bubble.bot {
-  background: #1e293b;
-}
-
-.bubble.me {
-  background: #2563eb;
-  text-align: right;
-  width: 100%;
-  right: 0;
-}
-
+/* Кнопки выбора */
 .choices button {
-  margin: 5px;
-  padding: 10px;
-  border-radius: 12px;
+  padding: 12px 18px;
+  border-radius: 15px;
   border: none;
   cursor: pointer;
+  font-weight: 500;
+  background: linear-gradient(135deg, #fcd34d, #fbbf24); /* градиент */
+  color: #1f2937;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
+.choices button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* Адаптивность */
+@media (max-width: 480px) {
+  .sms-chat, .chat-container {
+    padding: 15px;
+    border-radius: 20px;
+  }
+
+  .sms-bubble, .bubble {
+    padding: 12px 14px;
+    border-radius: 16px;
+  }
+
+  .choices button {
+    padding: 10px 14px;
+  }
+}
