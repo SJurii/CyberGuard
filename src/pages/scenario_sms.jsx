@@ -6,11 +6,10 @@ import smsImage_1 from "../assets/sms_attack_main_2.png";
 
 const ScenarioSMS = () => {
   return (
-    <>
+    <div className="sms_page">
       <header className="header_text">
         Что такое SMS-атака?
       </header>
-
     
 
       <main className="main-container-sms">
@@ -118,7 +117,7 @@ const ScenarioSMS = () => {
 
 
       </main>
-    </>
+    </div>
   );
 };
 

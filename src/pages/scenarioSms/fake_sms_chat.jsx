@@ -38,6 +38,7 @@ export default function FakeSmsChat() {
 
   useEffect(() => {
     if (!scenario) return;
+    window.scrollTo(0, 0);
 
     setMessages([]);
     setAnswers([]);
@@ -108,8 +109,13 @@ export default function FakeSmsChat() {
           </NavLink>
           ) : (
           <p>🎉 Все сценарии пройдены</p>
-          
           )}
+          <NavLink
+          className="restart-btn"
+          to="/scenario_sms"
+          >
+          Вернуться назад
+          </NavLink>
         </div>
       )}
     </div>
