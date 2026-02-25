@@ -1,27 +1,40 @@
 import { useState } from "react";
 import "../registration/styles/auth.css";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const navigate = useNavigate(); 
+
     const handleRegister = async (e) => {
         e.preventDefault();
 
-        const response = await fetch("http://localhost:8080/api/auth/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                name,
+        try {
+            const response = await fetch("http://localhost:8080/api/auth/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name,
                 email,
                 password
             })
         });
-
-        const data = await response.text();
-        alert(data);
+        if (response.ok) {
+            //const data = await response.text();
+            //alert(data);
+            navigate("/");
+        }else{
+            alert("Ошибка при регистрации");
+        }
+    } catch (error) {
+        console.error("Ошибка при регистрации:", error);
+        alert("Ошибка при регистрации");
+                
     };
+}
 
     return (
         <div className="auth-container">
