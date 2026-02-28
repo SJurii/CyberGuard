@@ -85,3 +85,77 @@
     padding: 10px 14px;
   }
 }
+
+/* Общий контейнер (имитация экрана телефона) */
+.sms-chat {
+  max-width: 400px;
+  height: 650px;
+  margin: 20px auto;
+  background: #e5ddd5; /* Классический фон WhatsApp */
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  border-radius: 30px;
+  border: 8px solid #333; /* Рамка телефона */
+  overflow-y: auto;
+  position: relative;
+}
+
+/* Строка сообщения */
+.message-row {
+  display: flex;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.message-row.me { justify-content: flex-end; }
+.message-row.system { justify-content: flex-start; }
+
+/* Пузыри */
+.bubble {
+  padding: 10px 15px;
+  border-radius: 15px;
+  max-width: 85%;
+  position: relative;
+  font-size: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.message-row.system .bubble {
+  background: #ffffff;
+  color: #111;
+  border-bottom-left-radius: 2px; /* Хвостик */
+}
+
+.message-row.me .bubble {
+  background: #dcf8c6;
+  color: #111;
+  border-bottom-right-radius: 2px; /* Хвостик */
+}
+
+/* Панель выбора (внизу экрана) */
+.choices {
+  margin-top: auto; /* Прижимаем к низу */
+  padding: 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.choices button {
+  background: #fff;
+  border: 1px solid #6366f1;
+  color: #6366f1;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  outline: none; /* Убираем ту самую обводку */
+}
+
+.choices button:hover {
+  background: #6366f1;
+  color: #fff;
+  transform: translateY(-2px);
+}
