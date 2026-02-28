@@ -95,27 +95,24 @@ export default function FakeSmsChat() {
       )}
 
       {ended && (
-        <div className="result">
-          <p>Сценарий завершён</p>
-          <p>Уровень риска: {risk}</p>
-          <p>Уровень доверия: {trust}</p> {/*My add new*/}
-
-          {nextScenarioId ? (
-          <NavLink
-          className="restart-btn"
-          to={`/scenario/sms/${nextScenarioId}`}
-          >
-          Следующий сценарий →
-          </NavLink>
-          ) : (
-          <p>🎉 Все сценарии пройдены</p>
-          )}
-          <NavLink
-          className="restart-btn"
-          to="/scenario_sms"
-          >
-          Вернуться назад
-          </NavLink>
+        <div className="result-overlay">
+          <div className="result-card">
+            <span className="result-icon">{risk > 5 ? "⚠️" : "🎯"}</span>
+            <h3>Сценарий завершён</h3>
+            <div className="result-stats">
+              <p>Риск: <span className={risk > 5 ? "bad" : "good"}>{risk}</span></p>
+              <p>Доверие: <span>{trust}</span></p>
+            </div>
+            
+            <div className="result-actions">
+              {nextScenarioId && (
+                <NavLink className="next-btn" to={`/scenario/sms/${nextScenarioId}`}>
+                  Следующий этап →
+                </NavLink>
+              )}
+              <NavLink className="back-link" to="/scenario_sms">Вернуться к списку</NavLink>
+            </div>
+          </div>
         </div>
       )}
     </div>

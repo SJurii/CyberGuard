@@ -1,199 +1,281 @@
-/* ===== ОСНОВА СТРАНИЦЫ ===== */
-.sms_page {
-    min-height: 100vh;
-    background: linear-gradient(135deg, #f0f4ff, #f8fafc);
-    color: #1f2937;
-    font-family: 'Arial', sans-serif;
+/* Контейнер симуляции */
+.simulation-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+    background: white;
+    padding: 50px;
+    border-radius: 40px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.05);
+    margin-bottom: 50px;
+}
+
+/* Макет телефона */
+.phone-wrapper {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.phone-mockup {
+    width: 280px;
+    height: 520px;
+    background: #000;
+    border-radius: 45px;
+    padding: 12px;
+    box-shadow: 0 50px 100px -20px rgba(0,0,0,0.3);
+}
+
+.phone-screen {
+    background: #e7e8f7;
+    height: 100%;
+    border-radius: 35px;
+    padding: 20px 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.status-bar {
+    font-size: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Интерактивные зоны в SMS */
+.target {
+    cursor: help;
+    border-bottom: 2px dashed transparent;
+    transition: 0.3s;
+}
+
+.target.active {
+    border-bottom: 2px dashed #6366f1;
+    background: rgba(99, 102, 241, 0.1);
+}
+
+/* Панель анализа (справа) */
+.analysis-board {
     padding: 20px;
 }
 
-/* ===== HEADER ===== */
-.sms_page header {
-    padding: 40px 20px;
-    text-align: center;
+.hint-display {
+    min-height: 150px;
+    background: #f8fafc;
+    border-left: 4px solid #6366f1;
+    padding: 20px;
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
 }
 
-.sms_page .header_text {
-    font-size: 42px;
-    font-weight: 700;
-    color: #1e3a8b;
-    background: linear-gradient(135deg, #ffffff, #e0e7ff);
-    padding: 25px 30px;
+.hint-text {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #1e2937;
+}
+
+.animate-fade {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateX(10px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* Инфо-карточки под симуляцией */
+.learning-blocks {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.learn-card {
+    background: #f8fafc;
+    padding: 30px;
     border-radius: 25px;
-    box-shadow: 0 12px 35px rgba(0,0,0,0.08);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
 }
 
-/* ===== ФОН С КАРТИНКОЙ ===== */
-.sms_page .back_image {
-    background: url(../assets/sms_attack_main_2.png) center / cover no-repeat;
-    min-height: 100vh;
-    width: 100%;
+.learn-card.danger {
+    border: 1px solid #fee2e2;
+    background: #fffafa;
+}
+
+.learn-card h3 { color: #1e40af; margin-bottom: 15px; }
+
+/* Адаптивность для планшетов */
+@media (max-width: 900px) {
+    .simulation-container {
+        grid-template-columns: 1fr;
+    }
+    .phone-mockup { width: 260px; height: 480px; }
+}
+
+/* Облачко сообщения */
+.sms-bubble {
+    background-color: #f8fafc; /* Твой стиль */
+    padding: 15px;
+    border-radius: 18px;
+    border-top-left-radius: 4px; /* Эффект «хвостика» входящего сообщения */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin-top: 10px;
     position: relative;
-    border-radius: 20px;
+    max-width: 95%;
 }
 
-/* ===== ОСНОВНОЙ КОНТЕНТ ===== */
-.sms_page .main_container-sms {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 40px;
-    padding: 40px 20px;
-    justify-content: center;
-    align-items: flex-start;
+/* Имя отправителя */
+.sender {
+    font-weight: 800;
+    font-size: 14px;
+    color: #2563eb;
+    margin-bottom: 5px;
+    display: block;
 }
 
-/* ===== ТЕКСТ СЛЕВА ===== */
-.sms_page .side-text-leader {
-    flex: 1 1 400px;
-    font-size: 17px;
-    line-height: 1.7;
-    color: #475569;
-    background: rgba(255,255,255,0.75);
-    padding: 25px;
-    border-radius: 25px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
-}
-
-/* ===== ИНФО-БЛОК ===== */
-.sms_page .sms-attack-info {
-    flex: 1 1 400px;
-    max-width: 800px;
-    padding: 40px;
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(12px);
-    border-radius: 25px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-}
-
-.sms_page .sms-attack-info p,
-.sms_page .sms-attack-info li {
-    font-size: 18px;
-    line-height: 1.8;
+/* Текст сообщения */
+.message {
+    font-size: 15px;
     color: #1f2937;
+    line-height: 1.4;
+    margin: 0;
 }
 
-/* ===== СПИСОК ===== */
-.sms_page ul {
-    padding-left: 25px;
+/* Ссылка внутри сообщения */
+.fake-link {
+    color: #2563eb;
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: 500;
+    word-break: break-all; /* Чтобы длинная ссылка не вылезала за пределы телефона */
 }
 
-/* ===== КАРТИНКА ===== */
-.sms_page .sms-attack-image {
-    width: 60%;
-    max-width: 500px;
-    position: absolute;
-    right: 20px;
-    bottom: 20px;
+/* Подсказка под телефоном */
+.instruction {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #64748b;
+    font-style: italic;
+}
+.sender:hover {
+    border-bottom: 2px dashed #6366f1;
+    width: fit-content;
+    
+}
+.btn_back{
+    font-weight: 800;
+    font-size: 14px;
+    padding: 7px;
     border-radius: 20px;
+    color: #f8fafc;
+    background-color: #6366f1;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border: none;
+    margin: 5px 0;
+    display: block;
 }
 
-/* ===== ПРИМЕР ФИШИНГА ===== */
-.sms_page .image_phishing_example {
-    margin: 50px auto;
-    padding: 25px;
-    background: rgba(255,255,255,0.85);
-    border-radius: 25px;
-    box-shadow: 0 12px 35px rgba(0,0,0,0.08);
+/* Финальная карточка */
+.ready-card {
+    margin: 30px 0;
+    background: #ffffff;
+    border-radius: 35px;
+    padding: 60px 40px;
     display: flex;
-    justify-content: center;
-}
-
-/* ===== БЛОК С КНОПКОЙ ===== */
-.sms_page .buttom_to_test {
-    margin: 60px auto;
-    padding: 40px;
-    width: 100%;
-    max-width: 700px;
-    background: rgba(255,255,255,0.85);
-    border-radius: 25px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    flex-direction: column;
+    align-items: center;
     text-align: center;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(99, 102, 241, 0.1);
+    box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.08);
 }
 
-.sms_page .buttom_to_test p {
-    font-size: 18px;
-    line-height: 1.8;
+/* Эффект пульсирующей иконки */
+.card-icon-wrap {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.icon-main {
+    font-size: 50px;
+    z-index: 2;
+    position: relative;
+}
+
+.pulse-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    background: rgba(99, 102, 241, 0.2);
+    border-radius: 50%;
+    animation: pulse-ring 2s infinite;
+}
+
+@keyframes pulse-ring {
+    0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.8; }
+    100% { transform: translate(-50%, -50%) scale(1.8); opacity: 0; }
+}
+
+/* Текстовые блоки */
+.ready-card h2 {
+    font-size: 36px;
+    color: #1e3a8a;
     margin-bottom: 20px;
 }
 
-/* ===== КНОПКИ ===== */
-.sms_page .btn-sms {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-top: 30px;
-}
-
-.sms_page .start-btn {
-    background: linear-gradient(90deg, #6366f1, #818cf8);
-    border: none;
-    padding: 14px 36px;
+.ready-card p {
+    max-width: 600px;
     font-size: 18px;
-    color: white;
-    border-radius: 50px;
-    cursor: pointer;
+    color: #64748b;
+    margin-bottom: 30px;
+}
+
+.stats-mini {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 40px;
     font-weight: 600;
-    transition: all 0.25s ease;
+    color: #475569;
 }
 
-.sms_page .start-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 35px rgba(99,102,241,0.4);
-}
-
-.sms_page .leader-btn {
-    background: linear-gradient(90deg, #22c55e, #16a34a);
+/* Кнопки (без обводки и с эффектом) */
+.start-btn-premium {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: white;
+    padding: 18px 45px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 18px;
+    box-shadow: 0 10px 30px rgba(79, 70, 229, 0.4);
+    transition: all 0.3s ease;
     border: none;
-    padding: 14px 36px;
-    font-size: 17px;
-    color: white;
-    border-radius: 50px;
-    cursor: pointer;
+    outline: none;
+}
+
+.start-btn-premium:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(79, 70, 229, 0.5);
+}
+
+.secondary-btn-flat {
+    
+    color: #64748b;
+    text-decoration: none;
     font-weight: 600;
-    transition: all 0.25s ease;
+    padding: 18px 30px;
+    transition: color 0.3s;
+    border: none;
+    outline: none;
 }
 
-.sms_page .leader-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 35px rgba(34,197,94,0.4);
-}
-
-/* ===== АДАПТИВНОСТЬ ===== */
-@media (max-width: 1024px) {
-    .sms_page .main_container-sms {
-        flex-direction: column;
-        gap: 30px;
-        padding: 30px 20px;
-    }
-
-    .sms_page .sms-attack-image {
-        position: relative;
-        width: 80%;
-        max-width: 400px;
-        margin: 20px auto 0;
-        right: auto;
-        bottom: auto;
-    }
-}
-
-@media (max-width: 640px) {
-    .sms_page .header_text {
-        font-size: 32px;
-        padding: 20px;
-    }
-
-    .sms_page .sms-attack-info,
-    .sms_page .side-text-leader,
-    .sms_page .buttom_to_test {
-        padding: 25px;
-        border-radius: 20px;
-    }
-
-    .sms_page .start-btn,
-    .sms_page .leader-btn {
-        padding: 12px 28px;
-        font-size: 16px;
-    }
+.secondary-btn-flat:hover {
+    color: #1e3a8a;
 }

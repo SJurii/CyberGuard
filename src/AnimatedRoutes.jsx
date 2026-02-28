@@ -6,6 +6,7 @@ import ScenarioSMS from "./pages/scenario_sms";
 import FakeSmsChat from "./pages/scenarioSms/fake_sms_chat";
 import Login from "./pages/registration/Login";
 import Register from "./pages/registration/Registration";
+import Profile from "./pages/profile/profile";
 
 const pageVariants = {
   initial: {
@@ -103,6 +104,21 @@ function AnimatedRoutes() {
               transition={pageTransition}
             >
               <Register />
+            </motion.div>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <motion.div
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition={pageTransition}
+            >
+              <Profile />
             </motion.div>
           }
         />
