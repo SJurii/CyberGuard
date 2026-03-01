@@ -25,7 +25,7 @@ export default function Register() {
         if (response.ok) {
             //const data = await response.text();
             //alert(data);
-            navigate("/");
+            navigate("/login");
         }else{
             alert("Ошибка при регистрации");
         }

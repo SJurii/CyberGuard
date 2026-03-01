@@ -1,22 +1,41 @@
 import { useState } from "react";
 import "../registration/styles/auth.css";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate(); 
 
     const handleLogin = async (e) => {
-        e.preventDefault();
+    e.preventDefault();
 
+    try {
         const response = await fetch("http://localhost:8080/api/auth/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password })
         });
 
-        const data = await response.text();
-        alert(data);
-    };
+        if (response.ok) {
+            const data = await response.json();
+            
+            // Сохраняем всё, что прислал сервер
+            localStorage.setItem("userToken", data.token);
+            localStorage.setItem("userId", data.id); // <--- Важно для страницы профиля
+            localStorage.setItem("userName", data.username);
+
+            navigate("/profile");
+        }else {
+            // Если сервер вернул 401 или 403
+            const errorText = await response.text();
+            alert("Ошибка входа: " + errorText);
+        }
+    } catch (error) {
+        console.error("Ошибка сети:", error);
+        alert("Не удалось связаться с сервером");
+    }
+};
 
     return (
         <div className="auth-container">
