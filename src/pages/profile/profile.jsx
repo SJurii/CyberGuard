@@ -1,27 +1,52 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../profile/styles/profile.css";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const Profile = () => {
-  // В будущем эти данные придут из твоего бэкенда на Spring Boot
-  const userData = {
-    name: "Кибер-Защитник",
-    email: "user@cyberguard.pro",
-    birthDate: "15.05.2000",
-    points: 1250,
-    rank: "Младший аналитик",
-    achievements: [
-      { id: 1, icon: "🛡️", title: "Первая защита", desc: "Распознал SMS-атаку" },
-      { id: 2, icon: "🔍", title: "Сыщик", desc: "Нашел 5 скрытых улик" },
-      { id: 3, icon: "🔥", title: "В ударе", desc: "3 дня обучения подряд" },
-    ]
-  };
+  const navigate = useNavigate();
+  // 1. Инициализируем состояние (null по умолчанию)
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    // Убедись, что эти ключи совпадают с тем, что ты сохранил при Login!
+    const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("userToken"); // В прошлом шаге мы сохраняли как userToken
+
+    if (!token) {
+        navigate("/login");
+        return;
+    }
+
+    fetch(`http://localhost:8080/api/profile/${userId}`, {
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("Не удалось загрузить профиль");
+        return res.json();
+    })
+    .then(data => {
+        setUserData(data); 
+    })
+    .catch(err => {
+        console.error("Ошибка:", err);
+        // Если токен плохой — можно разлогинить
+        // localStorage.clear();
+        // navigate("/login");
+    });
+  }, [navigate]);
+
+  // 2. Пока данные не пришли, показываем индикатор загрузки
+  if (!userData) {
+    return <div className="loading">Загрузка данных профиля...</div>;
+  }
 
   return (
     <div className="profile-page">
       <div className="profile-container">
         
-        {/* Левая колонка: Инфо пользователя */}
+        {/* Левая колонка */}
         <aside className="profile-sidebar">
           <div className="avatar-wrapper">
             <div className="avatar-main">👤</div>
@@ -30,7 +55,7 @@ const Profile = () => {
           
           <div className="user-bio">
             <h1>{userData.name}</h1>
-            <p className="user-rank">{userData.rank}</p>
+            <p className="user-rank">{userData.rank || "Новичок"}</p>
           </div>
 
           <div className="user-details">
@@ -40,27 +65,30 @@ const Profile = () => {
             </div>
             <div className="detail-item">
               <span>📅 Регистрация:</span>
-              <strong>{userData.birthDate}</strong>
+              {/* Если дата с сервера — проверь формат поля */}
+              <strong>{userData.birthDate || "Не указана"}</strong>
             </div>
           </div>
 
             <NavLink to="/" className="back-link">
-                <button className="back-btn">
-                Назад
-                </button>
+                <button className="back-btn">Назад</button>
             </NavLink>
+            
+            <button className="logout-btn" onClick={() => {
+                localStorage.clear();
+                navigate("/login");
+            }}>Выйти</button>
         </aside>
         
-
-        {/* Правая колонка: Прогресс и достижения */}
+        {/* Правая колонка */}
         <main className="profile-main">
           <section className="stats-grid">
             <div className="stat-card points">
               <h3>Баллы опыта</h3>
-              <div className="points-val">{userData.points}</div>
-              <p>До следующего ранга: 250 XP</p>
+              <div className="points-val">{userData.points || 0}</div>
+              <p>До следующего ранга: {1500 - (userData.points || 0)} XP</p>
               <div className="progress-bar">
-                <div className="progress-fill" style={{width: '75%'}}></div>
+                <div className="progress-fill" style={{width: `${(userData.points / 1500) * 100}%`}}></div>
               </div>
             </div>
           </section>
@@ -68,19 +96,23 @@ const Profile = () => {
           <section className="achievements-section">
             <h2>Достижения</h2>
             <div className="achievements-list">
-              {userData.achievements.map(ach => (
-                <div key={ach.id} className="achievement-card">
-                  <span className="ach-icon">{ach.icon}</span>
-                  <div className="ach-info">
-                    <h4>{ach.title}</h4>
-                    <p>{ach.desc}</p>
+              {/* Проверяем, есть ли достижения в данных с сервера */}
+              {userData.achievements && userData.achievements.length > 0 ? (
+                userData.achievements.map(ach => (
+                  <div key={ach.id} className="achievement-card">
+                    <span className="ach-icon">{ach.icon}</span>
+                    <div className="ach-info">
+                      <h4>{ach.title}</h4>
+                      <p>{ach.desc}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p>Достижений пока нет. Пора в бой!</p>
+              )}
             </div>
           </section>
         </main>
-
       </div>
     </div>
   );

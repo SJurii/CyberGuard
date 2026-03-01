@@ -7,6 +7,7 @@ import FakeSmsChat from "./pages/scenarioSms/fake_sms_chat";
 import Login from "./pages/registration/Login";
 import Register from "./pages/registration/Registration";
 import Profile from "./pages/profile/profile";
+//import ScenarioMap from "./pages/map/map";
 
 const pageVariants = {
   initial: {
