@@ -4,13 +4,13 @@ import { NavLink, useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const navigate = useNavigate();
-  // 1. Инициализируем состояние (null по умолчанию)
+
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    // Убедись, что эти ключи совпадают с тем, что ты сохранил при Login!
+  
     const userId = localStorage.getItem("userId");
-    const token = localStorage.getItem("userToken"); // В прошлом шаге мы сохраняли как userToken
+    const token = localStorage.getItem("userToken"); 
 
     if (!token) {
         navigate("/login");
@@ -66,7 +66,10 @@ const Profile = () => {
             <div className="detail-item">
               <span>📅 Регистрация:</span>
               {/* Если дата с сервера — проверь формат поля */}
-              <strong>{userData.birthDate || "Не указана"}</strong>
+              <strong>{userData.createdAt
+                  ? new Date(userData.createdAt).toLocaleDateString("ru-RU")
+                  : "Не указана" }
+                  </strong>
             </div>
           </div>
 
