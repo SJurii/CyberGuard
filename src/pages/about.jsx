@@ -22,7 +22,7 @@ function About() {
           </p>
 
           <div className="hero-buttons">
-            <NavLink className="start-btn" to="/scenario_sms">
+            <NavLink className="start-btn" to="/map">
               Начать обучение
             </NavLink>
             <NavLink className="secondary-btn" to="/register">

@@ -137,6 +137,7 @@
 
 .back-btn {
     margin-top: 30px;
+    margin-right: 10px;
     background: #6366f1;
     border: none;
     padding: 10px 20px;
@@ -156,5 +157,24 @@
 
 .back-btn:hover {
     background: #4f46e5;
+    transform: translateY(-2px);
+}
+
+.logout-btn{
+    margin-top: 30px;
+    margin-left: 10px;
+    background: rgb(213, 57, 57);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    color: white;
+    font-size: 12px;
+    transition: transform 0.3s ease;
+    font-weight: 800;
+}
+
+.logout-btn:hover {
+    background: red;
     transform: translateY(-2px);
 }
