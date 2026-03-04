@@ -8,6 +8,7 @@ import Login from "./pages/registration/Login";
 import Register from "./pages/registration/Registration";
 import Profile from "./pages/profile/profile";
 import MapPage from "./pages/map/map";
+import Leaderboard from "./pages/leader_board/leader_board";
 //import ScenarioMap from "./pages/map/map";
 
 const pageVariants = {
@@ -124,6 +125,20 @@ function AnimatedRoutes() {
             </motion.div>
           }
         />
+        <Route
+          path="/profile/:id"
+          element={
+            <motion.div
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition={pageTransition}
+            >
+              <Profile />
+            </motion.div>
+          }
+        />  
 
         <Route
           path="/map"
@@ -136,6 +151,20 @@ function AnimatedRoutes() {
               transition={pageTransition}
             >
               <MapPage />
+            </motion.div>
+          }
+        />
+        <Route
+          path="/profile/leaderboard"
+          element={
+            <motion.div
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition={pageTransition}
+            >
+              <Leaderboard />
             </motion.div>
           }
         />

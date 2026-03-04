@@ -3,52 +3,63 @@ export const smsScenario = {
 
   steps: {
     step1: {
-      from: "KyrgyzBank",
-      text: "⚠️ Зафиксирована подозрительная активность. Подтвердите, что это были вы.",
-      delay: 1500,
+      from: "KyrgyzBank_Security",
+      text: "🚨 ВНИМАНИЕ! Попытка списания 4500 KGS в магазине 'O!Store'. Если это не вы, немедленно ответьте 'НЕТ'.",
+      delay: 1000,
       answers: [
-        { text: "Это был я", next: "step2", risk: 5, trust: 5 },
-        { text: "Нет, не я", next: "step3", risk: 0 },
-        { text: "Игнорировать", next: "safe_end", risk: -15 }
+        { text: "НЕТ, ЭТО НЕ Я!", next: "panic_branch", risk: 20 },
+        { text: "Проигнорировать", next: "delayed_attack", risk: -10 },
+        { text: "Проверить баланс в приложении", next: "safe_end", risk: -30 }
       ]
     },
 
-    step2: {
-      from: "KyrgyzBank",
-      text: "Для подтверждения входа требуется быстрая верификация.",
+    // Ветка ПАНИКИ (наиболее опасная)
+    panic_branch: {
+      from: "KyrgyzBank_Security",
+      text: "Операция заморожена. Чтобы отменить транзакцию и заблокировать доступ мошенникам, введите код из следующего SMS.",
       answers: [
-        { text: "Продолжить", next: "step4", risk: 15 },
-        { text: "Я проверю сам", next: "safe_end", risk: -20 }
+        { text: "Жду код", next: "step_code", risk: 30 },
+        { text: "Почему вы спрашиваете код?", next: "step_pressure", risk: 10 }
       ]
     },
 
-    step3: {
-      from: "KyrgyzBank",
-      text: "Вход был выполнен с нового устройства. Если это не вы — аккаунт будет заблокирован.",
+    step_pressure: {
+      from: "KyrgyzBank_Security",
+      text: "Регламент безопасности 4.2. При отказе ваш счет будет заблокирован на 15 дней до выяснения обстоятельств. Вы подтверждаете отмену?",
       answers: [
-        { text: "Срочно исправить", next: "step4", risk: 20 },
-        { text: "Позвонить в банк", next: "safe_end", risk: -25 }
+        { text: "Да, отменяйте!", next: "step_code", risk: 40 },
+        { text: "Я сам доеду до отделения", next: "safe_end", risk: -40 }
       ]
     },
 
-    step4: {
-      from: "KyrgyzBank",
-      text: "Перейдите по защищённой ссылке:\nhttps://kgz-secure-login.com",
+    step_code: {
+      from: "1414", // Имитация сервисного номера
+      text: "Код восстановления доступа к приложению: 8829. НИКОМУ НЕ СООБЩАЙТЕ ЕГО!",
       answers: [
-        { text: "Перейти", next: "fail_end", risk: 50 },
-        { text: "Это похоже на мошенничество", next: "safe_end", risk: -30 }
+        { text: "Ввести код в чат", next: "fail_end", risk: 100 },
+        { text: "Стоп, в SMS написано не сообщать код!", next: "safe_end", risk: -50 }
+      ]
+    },
+
+    // Ветка с задержкой (если проигнорировал сразу)
+    delayed_attack: {
+      from: "KyrgyzBank_Security",
+      text: "Ваш аккаунт будет удален через 10 минут из-за подозрительных входов. Сохраните данные по ссылке: bit.ly/kgz-back-up",
+      answers: [
+        { text: "Перейти по ссылке", next: "fail_end", risk: 60 },
+        { text: "Заблокировать номер", next: "safe_end", risk: -20 }
       ]
     },
 
     safe_end: {
       from: "System",
-      text: "✅ Вы распознали попытку социальной инженерии.",
+      text: "✅ Победа! Вы проявили бдительность. Банки никогда не просят коды из SMS и не угрожают удалением аккаунта через 10 минут.",
       end: true
     },
 
     fail_end: {
       from: "System",
-      text: "❌ Вы ввели данные на поддельном сайте. Аккаунт скомпрометирован.",
+      text: "❌ Проигрыш. Мошенники получили доступ к вашему банкингу. Деньги списаны, на ваше имя оформлен микрокредит.",
       end: true
     }
   }
