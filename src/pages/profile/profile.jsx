@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from 'react-router-dom';
 import "../profile/styles/profile.css";
 import { NavLink, useNavigate } from "react-router-dom";
 
 const Profile = () => {
+  const myId = localStorage.getItem("userId"); // Назовем явно "мой ID"
+  const { id } = useParams(); // ID из URL
   const navigate = useNavigate();
+  const myProfile = !id || id === myId;
 
   const [userData, setUserData] = useState(null);
 
+  // Определяем итоговый ID для запроса: 
+  // Если в URL есть id — берем его, если нет — берем свой.
+  const targetId = id || myId;
+
   useEffect(() => {
-  
-    const userId = localStorage.getItem("userId");
     const token = localStorage.getItem("userToken"); 
 
     if (!token) {
@@ -17,7 +23,10 @@ const Profile = () => {
         return;
     }
 
-    fetch(`http://localhost:8080/api/profile/${userId}`, {
+    // Очищаем старые данные перед загрузкой новых (чтобы не видеть чужой профиль секунду)
+    setUserData(null);
+
+    fetch(`http://localhost:8080/api/profile/${targetId}`, {
         headers: {
             "Authorization": `Bearer ${token}`
         }
@@ -31,11 +40,10 @@ const Profile = () => {
     })
     .catch(err => {
         console.error("Ошибка:", err);
-        // Если токен плохой — можно разлогинить
-        // localStorage.clear();
-        // navigate("/login");
     });
-  }, [navigate]);
+
+    // ВАЖНО: useEffect должен срабатывать каждый раз, когда меняется targetId
+  }, [targetId, navigate]);
 
   // 2. Пока данные не пришли, показываем индикатор загрузки
   if (!userData) {
@@ -55,14 +63,16 @@ const Profile = () => {
           
           <div className="user-bio">
             <h1>{userData.name}</h1>
-            <p className="user-rank">{userData.rank || "Новичок"}</p>
+            <p className="user-rank">{userData.rank?.name || "Новичок"}</p>
           </div>
 
           <div className="user-details">
-            <div className="detail-item">
+           {myProfile ? (
+             <div className="detail-item">
               <span>📧 Email:</span>
               <strong>{userData.email}</strong>
-            </div>
+            </div>) : (null)}
+    
             <div className="detail-item">
               <span>📅 Регистрация:</span>
               {/* Если дата с сервера — проверь формат поля */}
@@ -76,11 +86,11 @@ const Profile = () => {
             <NavLink to="/" className="back-link">
                 <button className="back-btn">Назад</button>
             </NavLink>
-            
+            {myProfile ? (
             <button className="logout-btn" onClick={() => {
                 localStorage.clear();
                 navigate("/login");
-            }}>Выйти</button>
+            }}>Выйти</button>):(null)}
         </aside>
         
         {/* Правая колонка */}
@@ -88,10 +98,10 @@ const Profile = () => {
           <section className="stats-grid">
             <div className="stat-card points">
               <h3>Баллы опыта</h3>
-              <div className="points-val">{userData.points || 0}</div>
-              <p>До следующего ранга: {1500 - (userData.points || 0)} XP</p>
+              <div className="points-val">{userData.totalPoints || 0}</div>
+              <p>До следующего ранга: {(userData.nextRankPoints - (userData.totalPoints || 0)) || 0} XP</p>
               <div className="progress-bar">
-                <div className="progress-fill" style={{width: `${(userData.points / 1500) * 100}%`}}></div>
+                <div className="progress-fill" style={{width: `${(userData.totalPoints / userData.nextRankPoints) * 100}%`}}></div>
               </div>
             </div>
           </section>

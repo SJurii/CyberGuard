@@ -68,7 +68,7 @@ function About() {
           </p>
 
           <div className="leader-actions">
-            <NavLink className="leader-btn primary" to="/leaderboard">
+            <NavLink className="leader-btn primary" to="/profile/leaderboard">
               Просмотреть таблицу
             </NavLink>
             <span className="or-text">или</span>
