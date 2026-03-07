@@ -5,9 +5,10 @@ import styles from "../map/styles/map.module.css"; // И этот для сти�
 
 const scenarios = [
   { id: 1, title: 'SMS-Фишинг', difficulty: 'Легко', path: '/scenario_sms', icon: '📱', color: '#4facfe', status: 'available' },
-  { id: 2, title: 'SQL Инъекция', difficulty: 'Средне', path: '/non', icon: '💉', color: '#00f2fe', status: 'locked' },
-  { id: 3, title: 'Социальная инженерия', difficulty: 'Сложно', path: '/non', icon: '🎭', color: '#f093fb', status: 'locked' },
-  { id: 4, title: 'Взлом Wi-Fi', difficulty: 'Хардкор', path: '/non', icon: '📡', color: '#667eea', status: 'locked' },
+  { id: 2, title: 'Email-Фишинг', difficulty: 'Легко', path: '/scenario/email', icon: '📧', color: '#f093fb', status: 'available' },
+  { id: 3, title: 'SQL Инъекция', difficulty: 'Средне', path: '/non', icon: '💉', color: '#00f2fe', status: 'locked' },
+  { id: 4, title: 'Социальная инженерия', difficulty: 'Сложно', path: '/non', icon: '🎭', color: '#f093fb', status: 'locked' },
+  { id: 5, title: 'Взлом Wi-Fi', difficulty: 'Хардкор', path: '/non', icon: '📡', color: '#667eea', status: 'locked' },
 ];
 
 const MapPage = () => {

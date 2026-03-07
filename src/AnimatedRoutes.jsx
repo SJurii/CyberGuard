@@ -9,6 +9,8 @@ import Register from "./pages/registration/Registration";
 import Profile from "./pages/profile/profile";
 import MapPage from "./pages/map/map";
 import Leaderboard from "./pages/leader_board/leader_board";
+import ScenarioEmail from "./pages/scenarioEmail/scenario_email";
+import EmailScenarioPlayer from "./pages/scenarioEmail/EmailScenarioPlayer/email_scenario_player";
 //import ScenarioMap from "./pages/map/map";
 
 const pageVariants = {
@@ -165,6 +167,34 @@ function AnimatedRoutes() {
               transition={pageTransition}
             >
               <Leaderboard />
+            </motion.div>
+          }
+        />
+        <Route
+          path="/scenario/email"
+          element={
+            <motion.div
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition={pageTransition}
+            >
+              <ScenarioEmail />
+            </motion.div>
+          }
+        />
+        <Route
+          path="/scenario/email/player/:id"
+          element={
+            <motion.div
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition={pageTransition}
+            >
+              <EmailScenarioPlayer />
             </motion.div>
           }
         />

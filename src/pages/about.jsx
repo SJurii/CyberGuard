@@ -4,6 +4,11 @@ import mainImage from "../assets/main.png";
 import { NavLink } from 'react-router-dom';
 
 function About() {
+  const userId = localStorage.getItem("userId");
+
+  const isProfile = !!userId; // true, если userId существует и не пустой
+
+
   return (
     <>
       <header className="header">
@@ -25,9 +30,10 @@ function About() {
             <NavLink className="start-btn" to="/map">
               Начать обучение
             </NavLink>
-            <NavLink className="secondary-btn" to="/register">
+            {!isProfile ? (
+              <NavLink className="secondary-btn" to="/register">
               Создать профиль
-            </NavLink>
+            </NavLink>):(null)}
           </div>
         </div>
 
@@ -68,13 +74,18 @@ function About() {
           </p>
 
           <div className="leader-actions">
-            <NavLink className="leader-btn primary" to="/profile/leaderboard">
+            <NavLink className="start-btn" to="/profile/leaderboard">
               Просмотреть таблицу
             </NavLink>
             <span className="or-text">или</span>
-            <NavLink className="link-text" to="/login">
+              {!isProfile ? (
+            <NavLink className="secondary-btn" to="/login">
               Войти в аккаунт
+            </NavLink>):(
+              <NavLink className="secondary-btn" to={`/profile/${userId}`}>
+              Мой профиль
             </NavLink>
+            )}
           </div>
         </div>
       </section>

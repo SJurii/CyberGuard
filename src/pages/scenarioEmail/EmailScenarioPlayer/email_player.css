@@ -1,0 +1,102 @@
+.gmail-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #f6f8fc;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Header */
+.gmail-nav {
+  display: flex;
+  align-items: center;
+  padding: 8px 20px;
+  background: #f6f8fc;
+  justify-content: space-between;
+}
+
+.nav-left { display: flex; align-items: center; gap: 15px; }
+.nav-search input {
+  width: 500px;
+  padding: 12px 20px;
+  border-radius: 24px;
+  border: none;
+  background: #eaf1fb;
+}
+
+/* Sidebar */
+.gmail-main { display: flex; flex: 1; overflow: hidden; }
+.gmail-sidebar { width: 250px; padding: 15px; }
+.compose-btn {
+  background: #c2e7ff;
+  border: none;
+  padding: 16px 24px;
+  border-radius: 16px;
+  font-size: 14px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+.sidebar-list { list-style: none; padding: 0; }
+.sidebar-list li {
+  padding: 10px 20px;
+  border-radius: 0 20px 20px 0;
+  cursor: pointer;
+  font-size: 14px;
+}
+.sidebar-list li.active { background: #d3e3fd; font-weight: bold; }
+
+/* Email Content Area */
+.email-view {
+  flex: 1;
+  background: white;
+  margin: 8px 8px 8px 0;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.email-toolbar { padding: 12px 20px; border-bottom: 1px solid #f1f1f1; display: flex; gap: 20px; }
+.email-toolbar button { background: none; border: none; font-size: 18px; cursor: pointer; color: #5f6368; }
+
+.email-container-scroll { flex: 1; overflow-y: auto; padding: 20px 40px; }
+.email-subject { font-size: 22px; font-weight: 400; margin-bottom: 25px; color: #1f1f1f; }
+
+.email-meta { display: flex; gap: 12px; margin-bottom: 15px; }
+.sender-avatar {
+  width: 40px; height: 40px; background: #5f6368; color: white;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;
+}
+.sender-name { font-weight: bold; font-size: 14px; margin-right: 10px; }
+.email-time { font-size: 12px; color: #5f6368; }
+.recipient-row { font-size: 12px; color: #5f6368; }
+
+.email-body-text { font-size: 14px; line-height: 1.6; color: #3c4043; }
+
+/* Кнопки внутри письма */
+.email-interactive-actions { margin-top: 30px; display: flex; gap: 10px; flex-wrap: wrap; }
+.gmail-standard-btn {
+  padding: 8px 24px; border: 1px solid #dadce0; border-radius: 4px;
+  background: white; cursor: pointer; font-weight: 500;
+}
+.gmail-standard-btn:hover { background: #f8f9fa; border-color: #c6c6c6; }
+
+.long-action-link {
+  background: #1a73e8; color: white; border: none; padding: 10px 24px;
+  border-radius: 4px; cursor: pointer; font-weight: 500;
+}
+
+/* Системные уведомления */
+.system-note {
+  background: #fff3cd; border: 1px solid #ffeeba;
+  padding: 15px; border-radius: 8px; margin: 20px 0;
+}
+
+/* Индикатор риска */
+.risk-meter-fixed {
+  position: fixed; bottom: 20px; left: 20px;
+  background: white; padding: 15px; border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 250px;
+}
+.meter-bg { background: #eee; height: 10px; border-radius: 5px; margin-top: 8px; }
+.meter-fill { background: #ff4d4d; height: 100%; border-radius: 5px; transition: 0.3s; }

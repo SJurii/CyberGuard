@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
 import "../profile/styles/profile.css";
 import { NavLink, useNavigate } from "react-router-dom";
+import * as Icons from "lucide-react";
 
 const Profile = () => {
   const myId = localStorage.getItem("userId"); // Назовем явно "мой ID"
@@ -9,8 +10,15 @@ const Profile = () => {
   const navigate = useNavigate();
   const myProfile = !id || id === myId;
 
+
   const [userData, setUserData] = useState(null);
 
+
+  const AchievementIcon = ({ name, color = "#f9d423" }) => {
+    const LucideIcon = Icons[name] || Icons.Award; // Если иконка не найдена, покажет кубок
+    return <LucideIcon color={color} size={32} strokeWidth={1.5} />;
+};
+    
   // Определяем итоговый ID для запроса: 
   // Если в URL есть id — берем его, если нет — берем свой.
   const targetId = id || myId;
@@ -36,6 +44,7 @@ const Profile = () => {
         return res.json();
     })
     .then(data => {
+      console.log("Данные профиля:", data); // Логируем полученные данные для отладки
         setUserData(data); 
     })
     .catch(err => {
@@ -113,10 +122,10 @@ const Profile = () => {
               {userData.achievements && userData.achievements.length > 0 ? (
                 userData.achievements.map(ach => (
                   <div key={ach.id} className="achievement-card">
-                    <span className="ach-icon">{ach.icon}</span>
+                    <AchievementIcon className="ach-icon" name={ach.icon} />
                     <div className="ach-info">
                       <h4>{ach.title}</h4>
-                      <p>{ach.desc}</p>
+                      <p>{ach.description}</p>
                     </div>
                   </div>
                 ))
