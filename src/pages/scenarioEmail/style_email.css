@@ -1,0 +1,99 @@
+.email_page { background-color: #f6f8fc; min-height: 100vh; }
+
+.gmail-mockup {
+  display: flex;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  min-height: 500px;
+  border: 1px solid #e0e0e0;
+}
+
+.gmail-sidebar {
+  width: 200px;
+  background: #f6f8fc;
+  padding: 20px 10px;
+}
+
+.compose-btn {
+  background: #c2e7ff;
+  padding: 15px;
+  border-radius: 16px;
+  text-align: center;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.folders li {
+  list-style: none;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.folders li.active { background: #d3e3fd; font-weight: bold; }
+
+.gmail-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.email-header-info {
+  padding: 20px;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.sender-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  background: #5f6368;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gmail-body { padding: 30px; line-height: 1.6; }
+
+.info-box {
+  background: #f8f9fa;
+  padding: 15px;
+  border-left: 4px solid #ea4335;
+  margin: 20px 0;
+}
+
+.gmail-action-btn {
+  background: #1a73e8;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Оверлей для Email */
+.warning-overlay-email {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(195, 25, 25, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  z-index: 10;
+  text-align: center;
+  padding: 20px;
+}
