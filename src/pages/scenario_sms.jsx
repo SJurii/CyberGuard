@@ -1,30 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/style_sms.css";
 import { NavLink } from "react-router-dom";
+import { AlertTriangle, ShieldCheck, Zap } from "lucide-react"; // Если используешь lucide-react
 
 const ScenarioSMS = () => {
   const [activeHint, setActiveHint] = useState(null);
   const [showWarning, setShowWarning] = useState(false);
 
+  // Эффект скролла для фона
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrolled = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+      document.documentElement.style.setProperty("--scroll", scrolled || 0);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const hints = [
-    { id: 'sender', text: '🚩 Имя "Bank_Official" выглядит официально, но банки часто используют короткие номера или уникальные буквенные имена. Мошенники подделывают их через сервисы рассылок.' },
-    { id: 'urgency', text: '🚩 Слова "Срочно" и "заблокирована" создают панику. Это психологический триггер — социальная инженерия.' },
-    { id: 'link', text: '🚩 Ссылка bit.ly скрывает реальный адрес. Настоящие банки никогда не используют сокращатели ссылок для входа в кабинет.' }
+    { id: 'sender', title: 'ОТПРАВИТЕЛЬ', text: 'Имя "Bank_Official" подделано. Настоящие банки используют защищенные альфа-имена или короткие номера, которые нельзя просто так купить.' },
+    { id: 'urgency', title: 'МАНИПУЛЯЦИЯ', text: 'Слова "Срочно" и "заблокирована" — классика социальной инженерии. Вас заставляют действовать на эмоциях, отключая логику.' },
+    { id: 'link', title: 'ФИШИНГ', text: 'Сокращенные ссылки (bit.ly) — главный признак кражи данных. Банк всегда пришлет ссылку на свой официальный домен.' }
   ];
 
   return (
     <div className="sms_page">
       <header className="header">
-        <h1 className="header_text">Кейс #1: Тревожное сообщение</h1>
+        <h1 className="header_text">АНАЛИЗ УГРОЗЫ: CASE_01</h1>
       </header>
 
       <main className="content-wrapper">
         <section className="simulation-container">
-          {/* Левая часть: Макет телефона */}
           <div className="phone-wrapper">
             <div className="phone-mockup">
               <div className="phone-screen">
-                <div className="status-bar">12:40 📶 🔋</div>
+                <div className="status-bar">
+                  <span>12:40</span>
+                  <span>LTE 🔋</span>
+                </div>
+                
                 <div className="sms-bubble">
                   <span className={`target ${activeHint === 'sender' ? 'active' : ''}`} onMouseEnter={() => setActiveHint('sender')}>
                     <p className="sender">Bank Official</p>
@@ -38,79 +52,72 @@ const ScenarioSMS = () => {
                     </span>
                   </p>
                 </div>
+
                 {showWarning && (
                   <div className="warning-overlay">
-                    <p><strong>Ловушка!</strong></p>
-                    <p>Вы перешли по фишинговой ссылке. В реальной жизни это могло стоить вам всех средств на карте.</p>
-                    <button className="btn_back" onClick={() => setShowWarning(false)}>Вернуться и изучить</button>
+                    <AlertTriangle size={48} style={{margin: '0 auto 15px'}} />
+                    <h3>СИСТЕМА ВЗЛОМАНА</h3>
+                    <p>Вы только что передали свои данные мошенникам.</p>
+                    <button className="btn_back" onClick={() => setShowWarning(false)}>Вернуться к анализу</button>
                   </div>
                 )}
               </div>
             </div>
-            <p className="instruction">Наведи на подсвеченные части текста в телефоне</p>
+            <p className="instruction">Наведите на подсвеченные зоны для анализа тактики</p>
           </div>
 
-          {/* Правая часть: Динамическая информация */}
           <div className="analysis-board">
-            <h2>Анализ угрозы</h2>
+            <h2>Протокол разбора</h2>
             <div className="hint-display">
               {activeHint ? (
-                <p className="hint-text animate-fade">{hints.find(h => h.id === activeHint).text}</p>
+                <div className="hint-content animate-fade">
+                  <p className="hint-text">
+                    <strong>{hints.find(h => h.id === activeHint).title}: </strong>
+                    {hints.find(h => h.id === activeHint).text}
+                  </p>
+                </div>
               ) : (
-                <p className="hint-placeholder">Наведи на элементы сообщения слева, чтобы разобрать тактику мошенников.</p>
+                <p className="hint-placeholder">Ожидание выбора цели на мониторе смартфона...</p>
               )}
             </div>
             <div className="quick-facts">
               <div className="fact">
-                <strong>90%</strong> атак начинаются с поддельного чувства срочности.
+                <Zap size={16} color="var(--secondary)" />
+                <span><strong>90%</strong> атак используют эффект срочности.</span>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Секция 3: Подробная информация (вместо скучного текста) */}
         <section className="learning-blocks">
           <div className="learn-card">
-            <h3>Как работает Смишинг?</h3>
-            <p>SMS-фишинг (Смишинг) — это отправка сообщений от имени доверенных лиц. Цель: заманить вас на сайт-двойник, который выглядит в точности как ваш банк.</p>
+            <h3>Механика Смишинга</h3>
+            <p>Злоумышленники используют SMS, чтобы обойти спам-фильтры почты. Это создает иллюзию персонального и важного сообщения прямо в вашем телефоне.</p>
           </div>
           <div className="learn-card danger">
-            <h3>Чего нельзя делать:</h3>
+            <h3>Протокол защиты:</h3>
             <ul>
-              <li>Переходить по ссылкам "подтверждения данных".</li>
-              <li>Вводить ПИН-код или CVV на сайтах из SMS.</li>
-              <li>Перезванивать по номеру из этого же сообщения.</li>
+              <li>Не открывайте ссылки из подозрительных SMS.</li>
+              <li>Проверяйте статус карты только в официальном приложении.</li>
+              <li>Игнорируйте угрозы блокировки — банк позвонит сам или пришлет пуш.</li>
             </ul>
           </div>
         </section>
 
         <section className="final-action">
           <div className="ready-card">
-            <div className="card-icon-wrap">
-              <div className="pulse-ring"></div>
-              <span className="icon-main">🎯</span>
-            </div>
+            <h2>ГОТОВЫ К ПОЛЕВОМУ ТЕСТУ?</h2>
+            <p>Проверьте свою бдительность в симуляции реального времени. Одна ошибка — и ваш виртуальный счет будет обнулен.</p>
             
-            <div className="card-content">
-              <h2>Проверим ваши навыки?</h2>
-              <p>
-                Теория — это хорошо, но в кибербезопасности решает практика. 
-                Сможете ли вы распознать обман, когда на кону стоят <strong>ваши деньги</strong>?
-              </p>
-              
-              <div className="stats-mini">
-                <span>⏱ 5 минут</span>
-                <span>🔥 5 реальных кейсов</span>
-              </div>
+            <div className="stats-mini">
+              <span><ShieldCheck size={18} inline /> 5 Уровней</span>
+              <span>🔥 +50 XP за успех</span>
+            </div>
 
-              <div className="btn-group">
-                <NavLink className="start-btn-premium" to="/scenario/sms/interesting_sc">
-                  Запустить тренажер
-                </NavLink>
-                <NavLink className="secondary-btn-flat" to="/">
-                  На главную
-                </NavLink>
-              </div>
+            <div className="btn-group">
+              <NavLink className="start-btn-premium" to="/scenario/sms/interesting_sc">
+                ЗАПУСТИТЬ ТРЕНАЖЕР
+              </NavLink>
             </div>
           </div>
         </section>

@@ -1,128 +1,116 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from 'react-router-dom';
-import "../profile/styles/profile.css";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useParams, NavLink, useNavigate } from 'react-router-dom';
 import * as Icons from "lucide-react";
+import "../profile/styles/profile.css";
 
 const Profile = () => {
-  const myId = localStorage.getItem("userId"); // Назовем явно "мой ID"
-  const { id } = useParams(); // ID из URL
+  const myId = localStorage.getItem("userId");
+  const { id } = useParams();
   const navigate = useNavigate();
   const myProfile = !id || id === myId;
-
-
   const [userData, setUserData] = useState(null);
 
-
-  const AchievementIcon = ({ name, color = "#f9d423" }) => {
-    const LucideIcon = Icons[name] || Icons.Award; // Если иконка не найдена, покажет кубок
-    return <LucideIcon color={color} size={32} strokeWidth={1.5} />;
-};
-    
-  // Определяем итоговый ID для запроса: 
-  // Если в URL есть id — берем его, если нет — берем свой.
   const targetId = id || myId;
+
+  // Тот же эффект скролла для единства дизайна
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrolled = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+      document.documentElement.style.setProperty("--scroll", scrolled || 0);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("userToken"); 
+    if (!token) { navigate("/login"); return; }
 
-    if (!token) {
-        navigate("/login");
-        return;
-    }
-
-    // Очищаем старые данные перед загрузкой новых (чтобы не видеть чужой профиль секунду)
     setUserData(null);
-
     fetch(`http://localhost:8080/api/profile/${targetId}`, {
-        headers: {
-            "Authorization": `Bearer ${token}`
-        }
+        headers: { "Authorization": `Bearer ${token}` }
     })
     .then(res => {
-        if (!res.ok) throw new Error("Не удалось загрузить профиль");
+        if (!res.ok) throw new Error("Ошибка загрузки");
         return res.json();
     })
-    .then(data => {
-      console.log("Данные профиля:", data); // Логируем полученные данные для отладки
-        setUserData(data); 
-    })
-    .catch(err => {
-        console.error("Ошибка:", err);
-    });
-
-    // ВАЖНО: useEffect должен срабатывать каждый раз, когда меняется targetId
+    .then(data => setUserData(data))
+    .catch(err => console.error(err));
   }, [targetId, navigate]);
 
-  // 2. Пока данные не пришли, показываем индикатор загрузки
+  const AchievementIcon = ({ name, color = "#6366f1" }) => {
+    const LucideIcon = Icons[name] || Icons.Award;
+    return <LucideIcon color={color} size={32} strokeWidth={1.5} className="ach-icon" />;
+  };
+
   if (!userData) {
-    return <div className="loading">Загрузка данных профиля...</div>;
+    return (
+      <div className="profile-page">
+        <div className="loading-spinner">Загрузка защищенных данных...</div>
+      </div>
+    );
   }
 
   return (
     <div className="profile-page">
       <div className="profile-container">
         
-        {/* Левая колонка */}
         <aside className="profile-sidebar">
           <div className="avatar-wrapper">
-            <div className="avatar-main">👤</div>
-            <button className="edit-avatar">📷</button>
+            <div className="avatar-main">
+              <Icons.User size={60} color="#6366f1" strokeWidth={1} />
+            </div>
+            {myProfile && <button className="edit-avatar"><Icons.Camera size={16}/></button>}
           </div>
           
           <div className="user-bio">
             <h1>{userData.name}</h1>
-            <p className="user-rank">{userData.rank?.name || "Новичок"}</p>
+            <p className="user-rank">{userData.rank?.name || "Агент безопасности"}</p>
           </div>
 
           <div className="user-details">
-           {myProfile ? (
-             <div className="detail-item">
-              <span>📧 Email:</span>
-              <strong>{userData.email}</strong>
-            </div>) : (null)}
-    
+            {myProfile && (
+              <div className="detail-item">
+                <span>Электронная почта</span>
+                <strong>{userData.email}</strong>
+              </div>
+            )}
             <div className="detail-item">
-              <span>📅 Регистрация:</span>
-              {/* Если дата с сервера — проверь формат поля */}
-              <strong>{userData.createdAt
-                  ? new Date(userData.createdAt).toLocaleDateString("ru-RU")
-                  : "Не указана" }
-                  </strong>
+              <span>В системе с</span>
+              <strong>{userData.createdAt ? new Date(userData.createdAt).toLocaleDateString("ru-RU") : "---"}</strong>
             </div>
           </div>
 
+          <div className="sidebar-actions">
             <NavLink to="/" className="back-link">
-                <button className="back-btn">Назад</button>
+                <button className="back-btn">На главную</button>
             </NavLink>
-            {myProfile ? (
-            <button className="logout-btn" onClick={() => {
-                localStorage.clear();
-                navigate("/login");
-            }}>Выйти</button>):(null)}
+            {myProfile && (
+              <button className="logout-btn" onClick={() => {
+                  localStorage.clear();
+                  navigate("/login");
+              }}>Терминировать сессию</button>
+            )}
+          </div>
         </aside>
         
-        {/* Правая колонка */}
         <main className="profile-main">
-          <section className="stats-grid">
-            <div className="stat-card points">
-              <h3>Баллы опыта</h3>
-              <div className="points-val">{userData.totalPoints || 0}</div>
-              <p>До следующего ранга: {(userData.nextRankPoints - (userData.totalPoints || 0)) || 0} XP</p>
-              <div className="progress-bar">
-                <div className="progress-fill" style={{width: `${(userData.totalPoints / userData.nextRankPoints) * 100}%`}}></div>
-              </div>
+          <section className="stat-card">
+            <h3>Текущий опыт (XP)</h3>
+            <div className="points-val">{userData.totalPoints || 0}</div>
+            <p>До следующего уровня: <strong>{(userData.nextRankPoints - (userData.totalPoints || 0)) || 0} XP</strong></p>
+            <div className="progress-bar">
+              <div className="progress-fill" style={{width: `${Math.min((userData.totalPoints / userData.nextRankPoints) * 100, 100)}%`}}></div>
             </div>
           </section>
 
           <section className="achievements-section">
-            <h2>Достижения</h2>
+            <h2>Достигнутые цели</h2>
             <div className="achievements-list">
-              {/* Проверяем, есть ли достижения в данных с сервера */}
-              {userData.achievements && userData.achievements.length > 0 ? (
+              {userData.achievements?.length > 0 ? (
                 userData.achievements.map(ach => (
                   <div key={ach.id} className="achievement-card">
-                    <AchievementIcon className="ach-icon" name={ach.icon} />
+                    <AchievementIcon name={ach.icon} />
                     <div className="ach-info">
                       <h4>{ach.title}</h4>
                       <p>{ach.description}</p>
@@ -130,7 +118,7 @@ const Profile = () => {
                   </div>
                 ))
               ) : (
-                <p>Достижений пока нет. Пора в бой!</p>
+                <div className="empty-achievements">Активных достижений пока нет. Начните обучение для их получения.</div>
               )}
             </div>
           </section>

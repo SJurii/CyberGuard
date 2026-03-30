@@ -1,52 +1,61 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../scenarioEmail/style_email.css"; 
 import { NavLink } from "react-router-dom";
+import { Mail, ShieldAlert, Fingerprint, MousePointer2 } from "lucide-react";
 
 const ScenarioEmail = () => {
   const [activeHint, setActiveHint] = useState(null);
   const [showWarning, setShowWarning] = useState(false);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrolled = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+      document.documentElement.style.setProperty("--scroll", scrolled || 0);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const hints = [
     { 
       id: 'sender', 
-      text: '🚩 Внимательно посмотрите на домен: "rnicrosoft.com". Мошенники заменили "m" на "rn". В обычном шрифте это почти незаметно, но ведет на совершенно другой сайт.' 
+      title: 'ГОМОГРАФ-АТАКА',
+      text: 'Внимательно посмотрите на домен: "rnicrosoft.com". Мошенники заменили "m" на "rn". В обычном шрифте это почти незаметно.' 
     },
     { 
       id: 'security_tag', 
-      text: '🚩 Теги вроде [URGENT] или [SECURITY ALERT] в теме письма заставляют вас действовать быстро, не включая критическое мышление.' 
+      title: 'МАНИПУЛЯЦИЯ',
+      text: 'Теги вроде [SECURITY ALERT] создают ложное чувство тревоги, заставляя пользователя совершать ошибки под давлением.' 
     },
     { 
       id: 'button', 
-      text: '🚩 Кнопки в письмах — главная ловушка. Если навести на нее (но не кликать), в углу браузера часто виден реальный адрес, который может быть типа "login-fake-site.net".' 
+      title: 'ТОЧКА ВЗЛОМА',
+      text: 'Кнопки — это "пусковые крючки". Всегда наводите курсор без клика, чтобы увидеть реальный URL в углу экрана.' 
     }
   ];
 
   return (
     <div className="email_page">
       <header className="header">
-        <h1 className="header_text">Кейс #2: Визуальный двойник (Email)</h1>
+        <h1 className="header_text">CASE_02: ЦИФРОВОЙ КЛОН</h1>
       </header>
 
       <main className="content-wrapper">
-        <section className="simulation-container">
-          {/* Левая часть: Макет Gmail */}
+        <section className="simulation-container" style={{maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '40px', background: 'rgba(255,255,255,0.02)', padding: '50px', borderRadius: '40px', border: '1px solid rgba(255,255,255,0.05)'}}>
+          
           <div className="gmail-wrapper">
             <div className="gmail-mockup">
               <div className="gmail-sidebar">
-                <div className="compose-btn">＋ Написать</div>
+                <div className="compose-btn">＋ COMPOSE</div>
                 <ul className="folders">
-                  <li className="active">📥 Входящие</li>
-                  <li>⭐ Помеченные</li>
-                  <li>📨 Отправленные</li>
-                  <li>🗑 Корзина</li>
+                  <li className="active">📥 Inbox</li>
+                  <li>⭐ Starred</li>
+                  <li>📨 Sent</li>
+                  <li>🗑 Trash</li>
                 </ul>
               </div>
               
               <div className="gmail-content">
-                <div className="gmail-toolbar">
-                  <span>←</span> <span>🗑</span> <span>📩</span> <span>⋮</span>
-                </div>
-                
                 <div className="email-header-info">
                   <h2 className={`target ${activeHint === 'security_tag' ? 'active' : ''}`} 
                       onMouseEnter={() => setActiveHint('security_tag')}>
@@ -57,92 +66,82 @@ const ScenarioEmail = () => {
                     <div className="sender-details">
                       <span className={`target ${activeHint === 'sender' ? 'active' : ''}`} 
                             onMouseEnter={() => setActiveHint('sender')}>
-                        <strong>Microsoft Security Team</strong> &lt;account-security@rnicrosoft.com&gt;
+                        <strong>Microsoft Security Team</strong> <span style={{opacity: 0.6}}>&lt;account-security@rnicrosoft.com&gt;</span>
                       </span>
-                      <p className="to-me">кому: мне ▾</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="email-body">
-                  <p>Уважаемый пользователь,</p>
-                  <p>Мы зафиксировали подозрительный вход в ваш аккаунт Microsoft из нового местоположения:</p>
+                  <p>System detected a suspicious login attempt from an unrecognized location:</p>
                   <div className="info-box">
-                    <p><strong>Страна:</strong> Нигерия (Lagos)</p>
-                    <p><strong>IP:</strong> 102.129.145.1</p>
+                    <p><strong>LOCATION:</strong> Lagos, Nigeria</p>
+                    <p><strong>IP_ADDR:</strong> 102.129.145.1</p>
+                    <p><strong>DEVICE:</strong> Linux/X11</p>
                   </div>
-                  <p>Если это были не вы, пожалуйста, подтвердите владение аккаунтом, чтобы предотвратить блокировку.</p>
+                  <p>If this was not you, please verify your identity to secure your account.</p>
                   
                   <button className={`gmail-action-btn target ${activeHint === 'button' ? 'active' : ''}`}
                           onMouseEnter={() => setActiveHint('button')}
                           onClick={() => setShowWarning(true)}>
-                    Secure My Account
+                    SECURE ACCOUNT
                   </button>
-                  
-                  <p className="footer-text">С уважением,<br/>Microsoft Account Security</p>
                 </div>
 
                 {showWarning && (
                   <div className="warning-overlay-email">
                     <div className="warning-content">
-                      <h3>⚠️ Данные под угрозой!</h3>
-                      <p>Вы нажали на кнопку, которая ведет на <strong>фишинговый сайт-клон</strong>.</p>
-                      <p>Обратите внимание на адрес отправителя: <strong>rn</strong>icrosoft (r + n) вместо <strong>m</strong>icrosoft.</p>
-                      <button className="btn_back" onClick={() => setShowWarning(false)}>Вернуться к анализу</button>
+                      <ShieldAlert size={48} color="#f43f5e" style={{marginBottom: '20px'}} />
+                      <h3>SESSION COMPROMISED</h3>
+                      <p>Вы перешли по фишинговой ссылке. Теперь у хакеров есть доступ к вашему токену авторизации.</p>
+                      <button className="btn_back" style={{background: '#f43f5e', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '10px', marginTop: '15px'}} onClick={() => setShowWarning(false)}>Вернуться</button>
                     </div>
                   </div>
                 )}
               </div>
             </div>
-            <p className="instruction">Наведи на элементы письма, чтобы найти ловушки</p>
           </div>
 
-          {/* Правая часть: Анализ */}
           <div className="analysis-board">
-            <h2>Анализ Email-угрозы</h2>
-            <div className="hint-display">
+            <h2>Протокол анализа</h2>
+            <div className="hint-display" style={{background: 'rgba(0,0,0,0.2)', padding: '25px', borderRadius: '20px', minHeight: '200px', border: '1px solid rgba(255,255,255,0.05)'}}>
               {activeHint ? (
-                <p className="hint-text animate-fade">{hints.find(h => h.id === activeHint).text}</p>
+                <div className="animate-fade">
+                  <h4 style={{color: 'var(--secondary)', marginBottom: '10px'}}>{hints.find(h => h.id === activeHint).title}</h4>
+                  <p className="hint-text">{hints.find(h => h.id === activeHint).text}</p>
+                </div>
               ) : (
-                <p className="hint-placeholder">Исследуйте детали письма слева. Особое внимание уделите адресу отправителя и доменам.</p>
+                <p style={{opacity: 0.5}}>Наведите на элементы интерфейса слева для расшифровки угроз...</p>
               )}
             </div>
-            <div className="quick-facts">
-              <div className="fact">
-                <strong>Homograph Attack</strong> — тактика использования похожих символов (например, кириллическая "о" вместо латинской "o").
-              </div>
+            <div className="quick-facts" style={{marginTop: '30px'}}>
+               <div className="fact" style={{display:'flex', gap: '10px', fontSize: '14px', color: '#94a3b8'}}>
+                  <Fingerprint size={18} color="var(--secondary)" />
+                  <span><strong>92%</strong> фишинговых атак используют подмену символов.</span>
+               </div>
             </div>
           </div>
         </section>
 
-        {/* Секция 3: Обучение */}
         <section className="learning-blocks">
           <div className="learn-card">
-            <h3>Проверка домена</h3>
-            <p>Всегда нажимайте на имя отправителя в Gmail, чтобы увидеть полный адрес после символа @. Мошенники часто называют аккаунт "Google Support", но адрес при этом может быть "support@xyz-123.net".</p>
+            <h3>DNS & Домены</h3>
+            <p>Мошенники регистрируют домены, которые визуально похожи на оригинал. Например: <strong>googIe.com</strong> (с большой 'I') вместо <strong>google.com</strong>.</p>
           </div>
           <div className="learn-card danger">
-            <h3>Золотые правила почты:</h3>
+            <h3>Чек-лист безопасности:</h3>
             <ul>
-              <li>Не вводите пароль на страницах, открытых по ссылкам из писем.</li>
-              <li>Если письмо пугает блокировкой — зайдите на официальный сайт вручную через браузер.</li>
-              <li>Проверяйте "хвост" ссылки перед кликом.</li>
+              <li>Проверяйте "Reply-to" адрес в заголовках.</li>
+              <li>Не открывайте вложения .zip или .html от незнакомцев.</li>
+              <li>Используйте 2FA (двухфакторную аутентификацию).</li>
             </ul>
           </div>
         </section>
 
-        <section className="final-action">
-          <div className="ready-card email-theme">
-             <div className="card-content">
-              <h2>Готовы к тренажеру?</h2>
-              <p>Мы подготовили для вас сценарии с Gmail, Outlook и корпоративной почтой. Проверьте свою зоркость!</p>
-              <div className="btn-group">
-                <NavLink className="start-btn-premium" to="/scenario/email/player/lottery_scam">
-                  Начать проверку
-                </NavLink>
-              </div>
-            </div>
-          </div>
+        <section className="final-action" style={{textAlign: 'center', marginTop: '40px'}}>
+            <NavLink className="start-btn-premium" style={{padding: '20px 60px', textDecoration: 'none', fontSize: '20px'}} to="/scenario/email/player/lottery_scam">
+              НАЧАТЬ МИССИЮ
+            </NavLink>
         </section>
       </main>
     </div>

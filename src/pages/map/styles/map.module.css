@@ -1,229 +1,221 @@
-/* Основной фон страницы */
+/* ===== CYBER MAP PREMUM DESIGN ===== */
 .map-page {
-  background: radial-gradient(circle at top, #1a1a2e 0%, #0f0f1a 100%);
   min-height: 100vh;
-  padding: 40px 20px;
-  color: #fff;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --hue: calc(220 + (var(--scroll, 0) * 40));
+  background: radial-gradient(circle at top right, hsl(var(--hue), 40%, 12%), #0f172a);
+  padding: 80px 20px;
+  color: #f8fafc;
+  font-family: 'Inter', system-ui, sans-serif;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Эффект плавающей сферы на фоне */
+.map-page::before {
+  content: "";
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, hsla(var(--hue), 80%, 50%, 0.1), transparent 70%);
+  transform: translate(-50%, -50%);
+  filter: blur(80px);
+  z-index: -1;
+  pointer-events: none;
 }
 
 .map-header {
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: 80px;
 }
 
-.map-header h1 {
-  font-size: 2.5rem;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  background: linear-gradient(to right, #00f2fe, #4facfe);
+.map-title {
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  background: linear-gradient(to bottom, #fff, #94a3b8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.5));
+  margin-bottom: 10px;
+  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.2));
+}
+
+.map-subtitle {
+  color: #64748b;
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 0.3em;
+  font-weight: 600;
 }
 
 /* Сетка карточек */
 .scenarios-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 30px;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 0 auto 60px;
 }
 
-/* Стили карточки */
+/* Стили карточки (Glassmorphism) */
 .scenario-card {
   position: relative;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  padding: 30px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 32px;
+  padding: 40px;
   text-align: center;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   overflow: hidden;
-  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Тот самый УНИКАЛЬНЫЙ пульсирующий эффект */
+.available {
+  /* Мы будем передавать --accent-color инлайном из JS */
+  border-color: rgba(var(--accent-color, 99, 102, 241), 0.3); 
+  animation: pulseNeon 2s infinite;
+  box-shadow: 0 0 20px rgba(var(--accent-color, 99, 102, 241), 0.1);
+}
+
+@keyframes pulseNeon {
+  0% { 
+    border-color: rgba(var(--accent-color, 99, 102, 241), 0.3);
+    box-shadow: 0 0 20px rgba(var(--accent-color, 99, 102, 241), 0.1);
+  }
+  50% { 
+    border-color: rgba(var(--accent-color, 99, 102, 241), 0.6);
+    box-shadow: 0 0 40px rgba(var(--accent-color, 99, 102, 241), 0.3);
+  }
+  100% { 
+    border-color: rgba(var(--accent-color, 99, 102, 241), 0.3);
+    box-shadow: 0 0 20px rgba(var(--accent-color, 99, 102, 241), 0.1);
+  }
 }
 
 /* Эффект при наведении */
 .scenario-card:hover:not(.locked) {
-  transform: translateY(-12px);
-  border-color: var(--accent-color);
-  box-shadow: 0 10px 30px -10px var(--accent-color);
+  transform: translateY(-15px) scale(1.02);
+  background: rgba(var(--accent-color, 255, 255, 255), 0.05);
+  border-color: rgba(var(--accent-color, 255, 255, 255), 0.3);
+  box-shadow: 0 30px 60px -10px rgba(0, 0, 0, 0.5);
 }
 
 .card-icon {
-  font-size: 3.5rem;
-  margin-bottom: 15px;
-  display: block;
+  font-size: 50px;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 0 10px rgba(var(--accent-color, 255, 255, 255), 0.3));
 }
 
 .card-content h3 {
-  margin: 10px 0;
-  font-size: 1.4rem;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
 }
 
 /* Тег сложности */
 .difficulty-tag {
   display: inline-block;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  background: rgba(var(--accent-color), 0.2);
-  border: 1px solid var(--accent-color);
-  color: var(--accent-color);
-  margin-bottom: 20px;
+  padding: 6px 16px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #94a3b8;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Кнопка запуска */
+/* Кнопка запуска (стиль Apple/Linear) */
 .start-btn {
   width: 100%;
-  padding: 12px;
-  border-radius: 12px;
+  padding: 16px;
+  border-radius: 16px;
   border: none;
-  background: var(--accent-color);
-  color: #fff;
-  font-weight: bold;
+  background: #fff;
+  color: #000;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 1px;
   cursor: pointer;
-  transition: opacity 0.3s;
+  transition: all 0.3s ease;
+  margin-top: 25px;
 }
 
 .start-btn:hover {
-  opacity: 0.8;
-  box-shadow: 0 0 15px var(--accent-color);
+  background: rgba(var(--accent-color, 255, 255, 255), 0.9);
+  color: #000;
+  transform: scale(1.03);
 }
 
 /* Состояние: Заблокировано */
 .locked {
   filter: grayscale(1);
-  opacity: 0.6;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
 .lock-overlay {
-  margin-top: 15px;
-  font-weight: bold;
-  color: #ff4d4d;
+  margin-top: 25px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #f43f5e; /* --accent */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-/* Анимация пульсации для доступных миссий */
-@keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(0, 242, 254, 0.4); }
-  70% { box-shadow: 0 0 0 15px rgba(0, 242, 254, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(0, 242, 254, 0); }
-}
-
-.available {
-  border-color: rgba(0, 242, 254, 0.5);
-  animation: pulse 2s infinite;
-}
-
+/* Финальные кнопки */
 .goHome {
   text-align: center;
-  margin-top: 50px; /* Отступ сверху, чтобы отделить от сетки */
   padding-bottom: 40px;
 }
 
-.home-btn {
-  /* Если --accent-color не придет из инлайна, используем #4facfe */
-  --btn-color: var(--accent-color, #4facfe); 
-  
-  display: inline-block;
-  min-width: 200px;
-  padding: 14px 30px;
-  background: var(--btn-color);
+.home-btn, .profile-nav-btn {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: #fff;
-  font-weight: bold;
+  font-weight: 600;
   text-transform: uppercase;
+  font-size: 12px;
   letter-spacing: 1px;
-  border: none;
-  border-radius: 25px; /* Скругляем как ты хотел */
+  padding: 14px 30px;
+  border-radius: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-.home-btn:hover {
-  opacity: 0.9;
-  transform: scale(1.05); /* Легкое увеличение при наведении */
-  box-shadow: 0 0 20px var(--btn-color);
+.home-btn:hover, .profile-nav-btn:hover {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
 }
 
-.map-header {
-  text-align: center;
-  margin-bottom: 50px;
-  padding: 0 20px;
-}
-
+/* Хедер профиля */
 .header-top {
   display: flex;
-  justify-content: space-between; /* Распределяет боковые блоки по краям */
+  justify-content: space-between;
   align-items: center;
   max-width: 1200px;
   margin: 0 auto;
-  gap: 15px;
 }
 
-.header-side {
-  flex: 1; /* Оба боковых блока занимают одинаковое место */
-  display: flex;
-  justify-content: flex-end; /* Кнопка прижимается вправо */
-}
+/* Убираем распорки, используем flex иерархию */
+.header-side { display: flex; align-items: center; }
 
-/* Пустая левая распорка просто занимает место */
-.header-side:first-child {
-  justify-content: flex-start;
-}
-
-.map-title {
-  flex: 2; /* Заголовок занимает больше места в центре */
-  font-size: 2.5rem;
-  margin: 0;
-  white-space: nowrap;
-  background: linear-gradient(to right, #00f2fe, #4facfe);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.5));
-}
-
-.profile-nav-btn {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
-  padding: 8px 16px;
-  border-radius: 12px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.3s ease;
-}
-
-/* --- АДАПТИВНОСТЬ --- */
-
-@media (max-width: 900px) {
-  .map-title {
-    font-size: 1.8rem;
-  }
-}
-
+/* Адаптивность */
 @media (max-width: 768px) {
-  .header-top {
-    flex-direction: column; /* На планшетах кнопка уходит под заголовок */
-    gap: 20px;
-  }
-  
-  .header-side {
-    justify-content: center !important; /* Кнопка по центру */
-    width: 100%;
-  }
-
-  .header-side:first-child {
-    display: none; /* Убираем пустую распорку */
-  }
-}
-.profile-nav-btn:hover {
-  background: rgba(0, 242, 254, 0.1);
-  border-color: #00f2fe;
-  box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
-  transform: translateY(-2px);
+  .header-top { flex-direction: column; gap: 20px; }
+  .map-title { font-size: 32px; }
+  .scenarios-grid { grid-template-columns: 1fr; }
 }
