@@ -180,7 +180,7 @@
   padding-bottom: 40px;
 }
 
-.home-btn, .profile-nav-btn {
+.home-btn, .profile-nav-btn, .admin-nav-btn {
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(5px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -193,12 +193,19 @@
   border-radius: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
+  margin-right: 5px;
 }
 
 .home-btn:hover, .profile-nav-btn:hover {
   background: #fff;
   color: #000;
   border-color: #fff;
+}
+
+.admin-nav-btn:hover {
+  background: #f43f5e;
+  color: #fff;
+  border-color: #f43f5e;
 }
 
 /* Хедер профиля */

@@ -12,6 +12,9 @@ const scenarios = [
   { id: 5, title: 'Взлом Wi-Fi', difficulty: 'Хардкор', path: '/non', icon: <Wifi size={40} strokeWidth={1} />, color: '244, 63, 94', status: 'locked' }, // Красный (Критическое/Сеть)
 ];
 
+const role = localStorage.getItem("userRole");
+console.log("Роль пользователя:", role);
+
 const MapPage = () => {
   const navigate = useNavigate(); 
 
@@ -41,6 +44,12 @@ const MapPage = () => {
               <User size={16} />
               Профиль
             </button>
+            {(role === 'USER') && (
+              <button className={styles['admin-nav-btn']} onClick={() => navigate('/admin')}>
+                <LockKeyhole size={16} />
+                Изменить
+              </button>
+            )}
           </div>
         </div>
         <p className={styles['map-subtitle']}>Оперативный сектор: выбор миссии</p>

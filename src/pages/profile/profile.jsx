@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useParams, NavLink, useNavigate } from 'react-router-dom';
 import * as Icons from "lucide-react";
 import "../profile/styles/profile.css";
+import { useAuth } from "../../context/AuthContext";
 
 const Profile = () => {
-  const myId = localStorage.getItem("userId");
+  const { user } = useAuth(); 
+  const myId = user?.id;
   const { id } = useParams();
   const navigate = useNavigate();
   const myProfile = !id || id === myId;
@@ -23,19 +25,41 @@ const Profile = () => {
   }, []);
 
   useEffect(() => {
-    const token = localStorage.getItem("userToken"); 
-    if (!token) { navigate("/login"); return; }
+    // 1. СТРОГАЯ ПРОВЕРКА: не пускаем запрос, если ID кривой
+    if (!targetId || targetId === "null" || targetId === "undefined") {
+      console.warn("Target ID is missing or invalid, skipping fetch.");
+      return; 
+    }
 
+    const token = localStorage.getItem("userToken"); 
+    if (!token) { 
+        navigate("/login"); 
+        return; 
+    }
+
+    // Сбрасываем старые данные перед новым запросом (чтобы не видеть профиль старого юзера)
     setUserData(null);
+
     fetch(`http://localhost:8080/api/profile/${targetId}`, {
-        headers: { "Authorization": `Bearer ${token}` }
+        headers: { 
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+        }
     })
     .then(res => {
-        if (!res.ok) throw new Error("Ошибка загрузки");
+        if (res.status === 401) { navigate("/login"); throw new Error("Unauthorized"); }
+        if (!res.ok) throw new Error("Ошибка сервера");
         return res.json();
     })
-    .then(data => setUserData(data))
-    .catch(err => console.error(err));
+    .then(data => {
+        setUserData(data);
+    })
+    .catch(err => {
+        console.error("Fetch error:", err);
+        // Здесь можно добавить toast.error("Не удалось загрузить профиль");
+    });
+
+  // В зависимости добавляем только то, от чего реально зависит запрос
   }, [targetId, navigate]);
 
   const AchievementIcon = ({ name, color = "#6366f1" }) => {
@@ -82,7 +106,7 @@ const Profile = () => {
           </div>
 
           <div className="sidebar-actions">
-            <NavLink to="/" className="back-link">
+            <NavLink to="/dashboard" className="back-link">
                 <button className="back-btn">На главную</button>
             </NavLink>
             {myProfile && (

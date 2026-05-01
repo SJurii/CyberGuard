@@ -13,10 +13,27 @@
     font-size: clamp(24px, 4vw, 42px);
     font-weight: 900;
     letter-spacing: -0.05em;
-    background: linear-gradient(to bottom, #fff, #94a3b8);
+    
+    /* Исправление отображения */
+    color: #ffffff; /* Цвет по умолчанию, если градиент не сработает */
+    background: linear-gradient(to bottom, #ffffff 0%, #94a3b8 100%);
+    
+    /* Обязательные префиксы для прозрачности текста */
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
+    
     margin-bottom: 40px;
+    display: block; /* Гарантируем, что это блочный элемент */
+    width: 100%;
+}
+
+/* Дополнительно проверь, чтобы span внутри не перебивали стили */
+.header_text span {
+    background: inherit;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 /* Контейнер симуляции */

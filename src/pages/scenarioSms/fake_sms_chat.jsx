@@ -57,8 +57,16 @@ export default function FakeSmsChat() {
     setTimeout(() => {
       setIsTyping(false);
       setMessages(prev => [...prev, { from: step.from, text: step.text }]);
-      if (step.answers) setAnswers(step.answers);
-      if (step.end) setEnded(true);
+      
+      // Если это финальный шаг, не ставим ended сразу!
+      if (step.end) {
+        // Даем пользователю 1.5 - 2 секунды прочитать текст, прежде чем выскочит окно
+        setTimeout(() => {
+          setEnded(true);
+        }, 1500); 
+      } else if (step.answers) {
+        setAnswers(step.answers);
+      }
     }, step.delay || 1000);
   };
 
