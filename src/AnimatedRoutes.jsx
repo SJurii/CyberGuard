@@ -10,29 +10,15 @@ import Profile from "./pages/profile/profile";
 import MapPage from "./pages/map/map";
 import Leaderboard from "./pages/leader_board/leader_board";
 import ScenarioEmail from "./pages/scenarioEmail/scenario_email";
-import EmailScenarioPlayer from "./pages/scenarioEmail/EmailScenarioPlayer/email_scenario_player";
 import Dashboard from "./pages/main/Dashboard";
-//import ScenarioMap from "./pages/map/map";
 
 const pageVariants = {
-  initial: {
-    opacity: 0,
-    x: -50,
-  },
-  animate: {
-    opacity: 1,
-    x: 0,
-  },
-  exit: {
-    opacity: 0,
-    x: 50,
-  },
+  initial: { opacity: 0, x: -50 },
+  animate: { opacity: 1, x: 0 },
+  exit: { opacity: 0, x: 50 },
 };
 
-const pageTransition = {
-  duration: 0.35,
-  ease: "easeInOut",
-};
+const pageTransition = { duration: 0.35, ease: "easeInOut" };
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -40,184 +26,43 @@ function AnimatedRoutes() {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route
-          path="/"
-          element={
-            <motion.div
-              variants={pageVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={pageTransition}
-            >
-              <About />
-            </motion.div>
-          }
-        />
+        {/* Главная и инфо */}
+        <Route path="/" element={<PageWrapper><About /></PageWrapper>} />
+        <Route path="/dashboard" element={<PageWrapper><Dashboard /></PageWrapper>} />
 
-        <Route
-          path="/scenario_sms"
-          element={
-            <motion.div
-              variants={pageVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={pageTransition}
-            >
-              <ScenarioSMS />
-            </motion.div>
-          }
-        />
+        {/* Списки сценариев по категориям */}
+        <Route path="/scenario_sms" element={<PageWrapper><ScenarioSMS /></PageWrapper>} />
+        <Route path="/scenario/email" element={<PageWrapper><ScenarioEmail /></PageWrapper>} />
 
-        <Route
-          path="/scenario/sms/:scenarioId"
-            element={
-            <motion.div
-              variants={pageVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={pageTransition}
-            >       
-              <FakeSmsChat />
-            </motion.div>
-        }
-        />
-        <Route
-          path="/login"
-          element={
-            <motion.div
-              variants={pageVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={pageTransition}
-            >
-              <Login />
-            </motion.div>
-          }
-        />
-        
-        <Route
-          path="/register"
-          element={
-            <motion.div
-              variants={pageVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={pageTransition}
-            >
-              <Register />
-            </motion.div>
-          }
-        />
+        {/* УНИВЕРСАЛЬНЫЙ ПЛЕЕР СЦЕНАРИЕВ */}
+        {/* Теперь он обрабатывает и /scenario/sms/name, и /scenario/email/name */}
+        <Route path="/scenario/:type/:scenarioId" element={<PageWrapper><FakeSmsChat /></PageWrapper>} />
 
-        <Route
-          path="/profile"
-          element={
-            <motion.div
-              variants={pageVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={pageTransition}
-            >
-              <Profile />
-            </motion.div>
-          }
-        />
-        <Route
-          path="/profile/:id"
-          element={
-            <motion.div
-              variants={pageVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={pageTransition}
-            >
-              <Profile />
-            </motion.div>
-          }
-        />  
+        {/* Карта и Лидерборд */}
+        <Route path="/map" element={<PageWrapper><MapPage /></PageWrapper>} />
+        <Route path="/profile/leaderboard" element={<PageWrapper><Leaderboard /></PageWrapper>} />
 
-        <Route
-          path="/map"
-          element={
-            <motion.div
-              variants={pageVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={pageTransition}
-            >
-              <MapPage />
-            </motion.div>
-          }
-        />
-        <Route
-          path="/profile/leaderboard"
-          element={
-            <motion.div
-              variants={pageVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={pageTransition}
-            >
-              <Leaderboard />
-            </motion.div>
-          }
-        />
-        <Route
-          path="/scenario/email"
-          element={
-            <motion.div
-              variants={pageVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={pageTransition}
-            >
-              <ScenarioEmail />
-            </motion.div>
-          }
-        />
-        <Route
-          path="/scenario/email/player/:id"
-          element={
-            <motion.div
-              variants={pageVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={pageTransition}
-            >
-              <EmailScenarioPlayer />
-            </motion.div>
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <motion.div
-              variants={pageVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={pageTransition}
-            >
-              <Dashboard />
-            </motion.div>
-          }
-        />
-
+        {/* Профиль и Аутентификация */}
+        <Route path="/login" element={<PageWrapper><Login /></PageWrapper>} />
+        <Route path="/register" element={<PageWrapper><Register /></PageWrapper>} />
+        <Route path="/profile" element={<PageWrapper><Profile /></PageWrapper>} />
+        <Route path="/profile/:id" element={<PageWrapper><Profile /></PageWrapper>} />
       </Routes>
-
     </AnimatePresence>
   );
 }
+
+// Вспомогательный компонент, чтобы не дублировать motion.div
+const PageWrapper = ({ children }) => (
+  <motion.div
+    variants={pageVariants}
+    initial="initial"
+    animate="animate"
+    exit="exit"
+    transition={pageTransition}
+  >
+    {children}
+  </motion.div>
+);
 
 export default AnimatedRoutes;

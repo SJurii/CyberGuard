@@ -115,7 +115,7 @@ const ScenarioSMS = () => {
             </div>
 
             <div className="btn-group">
-              <NavLink className="start-btn-premium" to="/scenario/sms/interesting_sc">
+              <NavLink className="start-btn-premium" to="/scenario/sms/deliveryScenario">
                 ЗАПУСТИТЬ ТРЕНАЖЕР
               </NavLink>
             </div>

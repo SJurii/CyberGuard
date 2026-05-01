@@ -1,69 +1,78 @@
 import { useEffect, useState, useRef } from "react";
-import { useParams, NavLink, useNavigate } from "react-router-dom";
-import { scenarios, scenarioOrder } from "./scenarios";
+import { useParams, useNavigate } from "react-router-dom";
 import "./fake_sms_chat.css";
 import toast from 'react-hot-toast';
 
 export default function FakeSmsChat() {
-  const { scenarioId } = useParams();
+  const { scenarioId } = useParams(); 
   const navigate = useNavigate();
   const chatEndRef = useRef(null);
   
-  const scenario = scenarios[scenarioId];
+  const [scenario, setScenario] = useState(null);
+  const [stepsData, setStepsData] = useState(null);
+  const [relatedScenarios, setRelatedScenarios] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const [answers, setAnswers] = useState([]);
   const [ended, setEnded] = useState(false);
-  const isAdmin = localStorage.getItem("userRole") === "ADMIN";
-
-  // Глобальный риск (сумма всех уровней), берем из стораджа
-  const [totalRisk, setTotalRisk] = useState(() => {
-    return Number(localStorage.getItem("totalRisk")) || 0;
-  });
-  // Локальный риск конкретно этого уровня (всегда с 0)
-  const [currentRisk, setCurrentRisk] = useState(0);
   
-  const handleDeleteScenario = async () => {
-    if (window.confirm("Вы уверены, что хотите удалить этот сценарий?")) {
-      toast.success("Сценарий удален (заглушка)");
-      navigate("/scenario_sms");
-    }
-  };
+  const [totalRisk, setTotalRisk] = useState(() => Number(localStorage.getItem("totalRisk")) || 0);
+  const [currentRisk, setCurrentRisk] = useState(0);
 
-  // Автопрокрутка
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
 
-  // Синхронизация глобального риска с localStorage
   useEffect(() => {
-    localStorage.setItem("totalRisk", totalRisk);
-  }, [totalRisk]);
+    const fetchFullData = async () => {
+      setLoading(true);
+      try {
+        const token = localStorage.getItem("userToken");
+        const headers = { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" };
 
-  // Сброс состояния ПРИ СМЕНЕ сценария
-  useEffect(() => {
-    if (!scenario) return;
-    setMessages([]);
-    setEnded(false);
-    setCurrentRisk(0); // Обнуляем локальный риск для нового уровня
-    receiveMessage(scenario.start);
+        const res = await fetch(`http://localhost:8080/api/scenarios/${scenarioId}`, { headers });
+        if (!res.ok) throw new Error("Сценарий не найден");
+        const data = await res.json();
+        
+        setScenario(data);
+        setStepsData(data.content);
+        setMessages([]);
+        setAnswers([]);
+        setEnded(false);
+        setCurrentRisk(0);
+
+        const listRes = await fetch(`http://localhost:8080/api/scenarios/type/${data.type}`, { headers });
+        if (listRes.ok) {
+          const listData = await listRes.json();
+          setRelatedScenarios(listData);
+        }
+
+        if (data.content && data.content.start) {
+          const firstStep = data.content.steps[data.content.start];
+          processStep(firstStep, data.content.steps);
+        }
+      } catch (err) {
+        toast.error("Ошибка загрузки: " + err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFullData();
   }, [scenarioId]);
 
-  const receiveMessage = (stepKey) => {
-    const step = scenario.steps[stepKey];
-    setAnswers([]);
+  const processStep = (step, allSteps) => {
+    if (!step) return;
     setIsTyping(true);
-
+    
     setTimeout(() => {
       setIsTyping(false);
       setMessages(prev => [...prev, { from: step.from, text: step.text }]);
       
-      // Если это финальный шаг, не ставим ended сразу!
       if (step.end) {
-        // Даем пользователю 1.5 - 2 секунды прочитать текст, прежде чем выскочит окно
-        setTimeout(() => {
-          setEnded(true);
-        }, 1500); 
+        setTimeout(() => setEnded(true), 1000); 
       } else if (step.answers) {
         setAnswers(step.answers);
       }
@@ -72,154 +81,145 @@ export default function FakeSmsChat() {
 
   const sendAnswer = (answer) => {
     const points = answer.risk || 0;
-
     setMessages(prev => [...prev, { from: "You", text: answer.text }]);
+    setAnswers([]); 
     
-    // Обновляем локальный риск
     setCurrentRisk(prev => prev + points);
-
-    // Обновляем глобальный риск с ограничением 0-100
     setTotalRisk(prev => {
-      const newVal = prev + points;
-      return Math.min(Math.max(newVal, 0), 100); 
+      const newVal = Math.min(Math.max(prev + points, 0), 100);
+      localStorage.setItem("totalRisk", newVal);
+      return newVal;
     });
 
-    receiveMessage(answer.next);
+    if (stepsData && stepsData.steps) {
+      const nextStep = stepsData.steps[answer.next];
+      if (nextStep) {
+        processStep(nextStep, stepsData.steps);
+      } else {
+        console.error("Шаг не найден:", answer.next);
+        setTimeout(() => setEnded(true), 1000);
+      }
+    }
   };
 
-const addPoints = async () => {
-    const userId = localStorage.getItem("userId");
-    const token = localStorage.getItem("userToken");
-    if (!userId) return;
+  const getNextScenarioPath = () => {
+    if (!scenario || relatedScenarios.length === 0) return null;
+    const currentIndex = relatedScenarios.findIndex(s => s.name === scenario.name);
+    const next = relatedScenarios[currentIndex + 1];
+    return next ? `/scenario/${next.type.toLowerCase()}/${next.name}` : null;
+  };
 
-    const points = totalRisk > 50 ? 10 : 50;
+  const nextPath = getNextScenarioPath();
+
+  const handleFinishOrNext = async (path) => {
+    // Вызываем начисление баллов и передаем путь для навигации после успеха
+    await finishSession(path);
+  };
+
+  const finishSession = async (path = null) => {
+    // 1. Достаем строку userData и парсим её в объект
+    const rawUserData = localStorage.getItem("userData");
+    const userData = rawUserData ? JSON.parse(rawUserData) : null;
+    
+    // 2. Извлекаем ID из объекта (согласно снимку экрана 2026-05-01 в 23.53.25.png)
+    const userId = userData?.id; 
+    const token = localStorage.getItem("userToken");
+
+    if (!userId) {
+      console.error("Ошибка: ID пользователя не найден в объекте userData");
+      toast.error("Не удалось определить ID пользователя");
+      return;
+    }
+
+    // 3. Рассчитываем баллы на основе риска
+    const pointsToAward = Number(totalRisk) > 50 ? 10 : 50;
 
     try {
-      const res = await fetch(`http://localhost:8080/api/profile/${userId}/addPoints`, {
+      const response = await fetch(`http://localhost:8080/api/profile/${userId}/addPoints`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-        body: JSON.stringify({ points, reason: `Завершил сессию. Риск: ${totalRisk}%` })
+        headers: { 
+          "Content-Type": "application/json", 
+          "Authorization": `Bearer ${token}` 
+        },
+        body: JSON.stringify({ 
+          points: pointsToAward, 
+          reason: `Завершил курс: ${scenario?.title || "Без названия"}` 
+        })
       });
 
-      if (res.ok) {
-        const data = await res.json();
+      if (!response.ok) throw new Error("Ошибка при начислении баллов");
+      
+      toast.success(`Курс пройден! +${pointsToAward} XP`);
+      
+      // Очищаем локальный риск только после успешного сохранения на бэке
+      localStorage.removeItem("totalRisk");
 
-        // Если бэк вернул новые ачивки
-        if (data.newAchievements && data.newAchievements.length > 0) {
-          data.newAchievements.forEach(ach => {
-            // Создаем кастомный тост
-            toast.custom((t) => (
-              <div className={`custom-toast ${t.visible ? 'animate-in' : 'animate-out'}`}>
-                <div className="toast-icon">🏆</div>
-                <div className="toast-body">
-                  <p className="toast-label">Новое достижение</p>
-                  <p className="toast-name">{ach.title}</p>
-                </div>
-              </div>
-            ), { duration: 4000 });
-          });
-        } else {
-          // Если ачивок нет, просто уведомление об очках
-          toast.success(`+${points} XP начислено!`, {
-            style: { background: '#1a1a2e', color: '#4facfe', border: '1px solid #4facfe' }
-          });
-        }
-
-        localStorage.removeItem("totalRisk");
-        
-        // Даем время посмотреть на тост перед уходом
-        setTimeout(() => navigate("/scenario_sms"), 2000);
+      // Навигация: либо к следующему сценарию, либо в список
+      if (path) {
+        navigate(path);
+      } else {
+        navigate("/scenario_sms"); 
       }
-    } catch (err) { 
-      toast.error("Ошибка связи с сервером");
-      console.error(err); 
+    } catch (err) {
+      console.error("Ошибка сохранения прогресса:", err);
+      toast.error("Ошибка сохранения прогресса");
     }
-};
-
-  const getRiskColor = () => {
-    if (totalRisk < 30) return "#10b981";
-    if (totalRisk < 70) return "#f59e0b";
-    return "#ef4444";
   };
 
-  const nextScenarioId = scenarioOrder[scenarioOrder.indexOf(scenarioId) + 1];
+  if (loading) return <div className="loading-screen">Загрузка симуляции...</div>;
+  if (!scenario) return <div className="error-screen">Сценарий не найден</div>;
 
-  // Внутри return компонента:
-return (
-  <div className={`sms-chat-container ${totalRisk >= 70 ? "critical-alert" : ""}`}>
-    {/* Верхняя панель */}
-    <div className="scenario-top-bar">
-      {/* ... кнопки назад и админские ... */}
-    </div>
-
-    {/* Прогресс-бар угрозы */}
-    <div className="risk-bar-container">
-      <div className="risk-label">
-        <span>УРОВЕНЬ ЦИФРОВОЙ УГРОЗЫ</span>
-        <span>{totalRisk}%</span>
+  return (
+    <div className={`sms-chat-container ${totalRisk >= 70 ? "critical-alert" : ""}`}>
+      <div className="scenario-top-bar">
+        <button onClick={() => navigate("/scenario_sms")} className="back-btn">←</button>
+        <div className="scenario-info">
+          <span className="type-tag">{scenario.type}</span>
+          <h2>{scenario.title}</h2>
+        </div>
       </div>
-      <div className="risk-bar-bg">
-        <div 
-          className="risk-bar-fill" 
-          style={{ width: `${totalRisk}%`, backgroundColor: getRiskColor(), color: getRiskColor() }}
-        />
-      </div>
-    </div>
 
-    {/* ТЕЛЕФОН */}
-    <div className="sms-chat">
-      <div className="chat-messages-area">
-        {messages.map((msg, i) => (
-          <div key={i} className={`message-row ${msg.from === "You" ? "me" : "system"}`}>
-            <div className="bubble">
-              <span className="sender-title">{msg.from === "You" ? "Защищенный канал" : msg.from}</span>
-              <p>{msg.text}</p>
+      <div className="risk-bar-container">
+        <div className="risk-label">УРОВЕНЬ РИСКА: {totalRisk}%</div>
+        <div className="risk-bar-bg">
+          <div className="risk-bar-fill" style={{ width: `${totalRisk}%` }} />
+        </div>
+      </div>
+
+      <div className="sms-chat">
+        <div className="chat-messages-area">
+          {messages.map((msg, i) => (
+            <div key={i} className={`message-row ${msg.from === "You" ? "me" : "system"}`}>
+              <div className="bubble">
+                <span className="sender-name">{msg.from === "You" ? "Вы" : msg.from}</span>
+                <p>{msg.text}</p>
+              </div>
             </div>
+          ))}
+          {isTyping && <div className="typing-indicator"><span>.</span><span>.</span><span>.</span></div>}
+          <div ref={chatEndRef} />
+        </div>
+
+        {!ended && !isTyping && (
+          <div className="choices">
+            {answers.map((a, i) => (
+              <button key={i} onClick={() => sendAnswer(a)}>{a.text}</button>
+            ))}
           </div>
-        ))}
-        {isTyping && (
-          <div className="message-row system">
-            <div className="bubble typing">
-              <span>.</span><span>.</span><span>.</span>
+        )}
+
+        {ended && (
+          <div className="result-overlay">
+            <div className="result-card">
+              <h3>Сценарий завершен</h3>
+              <p>Набранный риск: {currentRisk}%</p>
+              <button className="start-btn" onClick={() => handleFinishOrNext(nextPath)}>
+                {nextPath ? "Далее" : "Завершить"}
+              </button>
             </div>
           </div>
         )}
-        <div ref={chatEndRef} />
       </div>
-
-      {/* Выбор вариантов всегда внизу внутри "телефона" */}
-      {!ended && !isTyping && answers.length > 0 && (
-        <div className="choices">
-          {answers.map((a, i) => (
-            <button key={i} onClick={() => sendAnswer(a)}>
-              {a.text}
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* Оверлей финиша */}
-      {ended && (
-        <div className="result-overlay">
-          <div className="result-card">
-            <div className="finish-icon" style={{fontSize: '50px', marginBottom: '10px'}}>✔️</div>
-            <h3>Миссия завершена</h3>
-            <div className="result-stats">
-              <p>Уязвимость: <b>{currentRisk}%</b></p>
-            </div>
-            <div className="result-actions">
-              {nextScenarioId ? (
-                <NavLink className="start-btn" style={{display:'block', textDecoration:'none'}} to={`/scenario/sms/${nextScenarioId}`}>
-                   Следующий этап
-                </NavLink>
-              ) : (
-                <button className="start-btn" onClick={addPoints}>Зафиксировать XP</button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
-  </div>
-);
+  );
 }
