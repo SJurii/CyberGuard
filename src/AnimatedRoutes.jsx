@@ -11,6 +11,7 @@ import MapPage from "./pages/map/map";
 import Leaderboard from "./pages/leader_board/leader_board";
 import ScenarioEmail from "./pages/scenarioEmail/scenario_email";
 import EmailScenarioPlayer from "./pages/scenarioEmail/EmailScenarioPlayer/email_scenario_player";
+import Dashboard from "./pages/main/Dashboard";
 //import ScenarioMap from "./pages/map/map";
 
 const pageVariants = {
@@ -195,6 +196,20 @@ function AnimatedRoutes() {
               transition={pageTransition}
             >
               <EmailScenarioPlayer />
+            </motion.div>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <motion.div
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition={pageTransition}
+            >
+              <Dashboard />
             </motion.div>
           }
         />

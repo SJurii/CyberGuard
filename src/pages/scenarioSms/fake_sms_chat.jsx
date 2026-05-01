@@ -14,14 +14,21 @@ export default function FakeSmsChat() {
   const [isTyping, setIsTyping] = useState(false);
   const [answers, setAnswers] = useState([]);
   const [ended, setEnded] = useState(false);
+  const isAdmin = localStorage.getItem("userRole") === "ADMIN";
 
   // Глобальный риск (сумма всех уровней), берем из стораджа
   const [totalRisk, setTotalRisk] = useState(() => {
     return Number(localStorage.getItem("totalRisk")) || 0;
   });
-
   // Локальный риск конкретно этого уровня (всегда с 0)
   const [currentRisk, setCurrentRisk] = useState(0);
+  
+  const handleDeleteScenario = async () => {
+    if (window.confirm("Вы уверены, что хотите удалить этот сценарий?")) {
+      toast.success("Сценарий удален (заглушка)");
+      navigate("/scenario_sms");
+    }
+  };
 
   // Автопрокрутка
   useEffect(() => {
@@ -50,8 +57,16 @@ export default function FakeSmsChat() {
     setTimeout(() => {
       setIsTyping(false);
       setMessages(prev => [...prev, { from: step.from, text: step.text }]);
-      if (step.answers) setAnswers(step.answers);
-      if (step.end) setEnded(true);
+      
+      // Если это финальный шаг, не ставим ended сразу!
+      if (step.end) {
+        // Даем пользователю 1.5 - 2 секунды прочитать текст, прежде чем выскочит окно
+        setTimeout(() => {
+          setEnded(true);
+        }, 1500); 
+      } else if (step.answers) {
+        setAnswers(step.answers);
+      }
     }, step.delay || 1000);
   };
 
@@ -129,58 +144,82 @@ const addPoints = async () => {
 
   const nextScenarioId = scenarioOrder[scenarioOrder.indexOf(scenarioId) + 1];
 
-  return (
-    <div className={`sms-chat-container ${totalRisk >= 70 ? "critical-alert" : ""}`}>
-      {/* Прогресс-бар показывает ГЛОБАЛЬНЫЙ риск */}
-      <div className="risk-bar-container">
-        <div className="risk-label">Общая угроза: {totalRisk}%</div>
-        <div className="risk-bar-bg">
-          <div 
-            className="risk-bar-fill" 
-            style={{ width: `${totalRisk}%`, backgroundColor: getRiskColor() }}
-          />
-        </div>
-      </div>
+  // Внутри return компонента:
+return (
+  <div className={`sms-chat-container ${totalRisk >= 70 ? "critical-alert" : ""}`}>
+    {/* Верхняя панель */}
+    <div className="scenario-top-bar">
+      {/* ... кнопки назад и админские ... */}
+    </div>
 
-      <div className="sms-chat">
+    {/* Прогресс-бар угрозы */}
+    <div className="risk-bar-container">
+      <div className="risk-label">
+        <span>УРОВЕНЬ ЦИФРОВОЙ УГРОЗЫ</span>
+        <span>{totalRisk}%</span>
+      </div>
+      <div className="risk-bar-bg">
+        <div 
+          className="risk-bar-fill" 
+          style={{ width: `${totalRisk}%`, backgroundColor: getRiskColor(), color: getRiskColor() }}
+        />
+      </div>
+    </div>
+
+    {/* ТЕЛЕФОН */}
+    <div className="sms-chat">
+      <div className="chat-messages-area">
         {messages.map((msg, i) => (
           <div key={i} className={`message-row ${msg.from === "You" ? "me" : "system"}`}>
             <div className="bubble">
-              <b className="sender-title">{msg.from}</b>
+              <span className="sender-title">{msg.from === "You" ? "Защищенный канал" : msg.from}</span>
               <p>{msg.text}</p>
             </div>
           </div>
         ))}
-        {isTyping && <div className="message-row system"><div className="bubble typing">...</div></div>}
-        <div ref={chatEndRef} />
-
-        {!ended && !isTyping && (
-          <div className="choices">
-            {answers.map((a, i) => (
-              <button key={i} onClick={() => sendAnswer(a)}>{a.text}</button>
-            ))}
+        {isTyping && (
+          <div className="message-row system">
+            <div className="bubble typing">
+              <span>.</span><span>.</span><span>.</span>
+            </div>
           </div>
         )}
+        <div ref={chatEndRef} />
       </div>
 
+      {/* Выбор вариантов всегда внизу внутри "телефона" */}
+      {!ended && !isTyping && answers.length > 0 && (
+        <div className="choices">
+          {answers.map((a, i) => (
+            <button key={i} onClick={() => sendAnswer(a)}>
+              {a.text}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Оверлей финиша */}
       {ended && (
         <div className="result-overlay">
           <div className="result-card">
-            <h3>Этап пройден!</h3>
+            <div className="finish-icon" style={{fontSize: '50px', marginBottom: '10px'}}>✔️</div>
+            <h3>Миссия завершена</h3>
             <div className="result-stats">
-              <p>Риск за этот уровень: <b>{currentRisk}%</b></p>
-              <p>Общий накопленный риск: <b>{totalRisk}%</b></p>
+              <p>Уязвимость: <b>{currentRisk}%</b></p>
             </div>
             <div className="result-actions">
               {nextScenarioId ? (
-                <NavLink className="next-btn" to={`/scenario/sms/${nextScenarioId}`}>Далее</NavLink>
+                <NavLink className="start-btn" style={{display:'block', textDecoration:'none'}} to={`/scenario/sms/${nextScenarioId}`}>
+                   Следующий этап
+                </NavLink>
               ) : (
-                <button className="back-btn" onClick={addPoints}>Сохранить итог</button>
+                <button className="start-btn" onClick={addPoints}>Зафиксировать XP</button>
               )}
             </div>
           </div>
         </div>
       )}
     </div>
-  );
+  </div>
+);
 }

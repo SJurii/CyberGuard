@@ -1,32 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { scenarios, scenarioOrder } from "./scenarios"; // Импортируем твои данные
+import { 
+  ArrowLeft, Trash2, ShieldAlert, Archive, MoreVertical, 
+  RefreshCcw, Home, ChevronRight, Send, Star, FileText, 
+  Inbox, AlertTriangle, CheckCircle2, Menu, Search, Info, ShieldCheck
+} from "lucide-react";
+import { scenarios, scenarioOrder } from "./scenarios"; 
 import "../EmailScenarioPlayer/email_player.css";
 
 const EmailScenarioPlayer = () => {
   const { id } = useParams(); 
   const navigate = useNavigate();
-  
   const scenario = scenarios[id];
-  console.log("Загруженный", scenarios); 
-  console.log("Загруженный сценарий:", scenario); 
   
   const [currentStepId, setCurrentStepId] = useState(null);
   const [history, setHistory] = useState([]);
   const [risk, setRisk] = useState(0);
   const [isEnded, setIsEnded] = useState(false);
+  const [activeHint, setActiveHint] = useState(null);
 
-  // 1. Инициализация при загрузке
   useEffect(() => {
     if (scenario) {
       setCurrentStepId(scenario.start);
-      setHistory([]); // Очищаем историю при смене сценария
+      setHistory([]); 
       setRisk(0);
       setIsEnded(false);
     }
   }, [id, scenario]);
 
-  // 2. Обработка перехода по шагам
   useEffect(() => {
     if (currentStepId && scenario) {
       const step = scenario.steps[currentStepId];
@@ -38,102 +39,91 @@ const EmailScenarioPlayer = () => {
   }, [currentStepId, scenario]);
 
   const handleAction = (answer) => {
+    if (isEnded) return;
     setRisk((prev) => prev + (answer.risk || 0));
     setCurrentStepId(answer.next);
+    setActiveHint(null);
   };
 
-  // 3. Логика для кнопки "Следующий кейс"
-  const getNextScenarioId = () => {
-    const currentIndex = scenarioOrder.indexOf(id);
-    if (currentIndex !== -1 && currentIndex < scenarioOrder.length - 1) {
-      return scenarioOrder[currentIndex + 1];
-    }
-    return null;
-  };
-
-  const nextId = getNextScenarioId();
-
-  if (!scenario) {
-    return (
-      <div className="error-screen">
-        <h2>Кейс "{id}" не найден</h2>
-        <button onClick={() => navigate("/")}>Вернуться к списку</button>
-      </div>
-    );
-  }
+  if (!scenario) return <div className="error">Загрузка...</div>;
 
   return (
     <div className="gmail-layout">
-      {/* Шапка Gmail */}
+      {/* HEADER */}
       <header className="gmail-nav">
         <div className="nav-left">
-          <div className="menu-icon" onClick={() => navigate("/")}>☰</div>
-          <img src="https://ssl.gstatic.com/ui/v1/icons/mail/rfr/logo_gmail_lockup_default_1x_r2.png" alt="Gmail" />
+          <button className="icon-btn"><Menu size={20} /></button>
+          <img src="https://ssl.gstatic.com/ui/v1/icons/mail/rfr/logo_gmail_lockup_default_1x_r2.png" alt="Gmail" className="gmail-logo" />
         </div>
         <div className="nav-search">
-          <input type="text" placeholder="Поиск в почте" disabled />
+          <div className="search-container">
+            <Search size={18} />
+            <input type="text" placeholder="Поиск в Cyber Mail" disabled />
+          </div>
         </div>
       </header>
 
       <div className="gmail-main">
-        {/* Боковая панель */}
+        {/* 1. LEFT SIDEBAR */}
         <aside className="gmail-sidebar">
           <button className="compose-btn">＋ Написать</button>
           <ul className="sidebar-list">
-            <li className="active">📥 Входящие <span className="count">1</span></li>
-            <li>⭐ Помеченные</li>
-            <li>📨 Отправленные</li>
-            <li>📄 Черновики</li>
-            <li>🗑️ Корзина</li>
+            <li className="active"><Inbox size={18} /> Входящие</li>
+            <li><Star size={18} /> Помеченные</li>
+            <li><Send size={18} /> Отправленные</li>
+            <li><Trash2 size={18} /> Корзина</li>
           </ul>
         </aside>
 
-        {/* Тело письма */}
+        {/* 2. CENTRAL EMAIL VIEW */}
         <section className="email-view">
           <div className="email-toolbar">
-            <button onClick={() => navigate("/scenario/email")} title="Назад">←</button>
-            <button title="Архив">📥</button>
-            <button title="Спам">⚠️</button>
-            <button title="Удалить">🗑️</button>
+            <button onClick={() => navigate("/scenario/email")}><ArrowLeft size={18}/></button>
+            <button><Archive size={18}/></button>
+            <button><ShieldAlert size={18}/></button>
+            <button><Trash2 size={18}/></button>
           </div>
 
           <div className="email-container-scroll">
-            <h1 className="email-subject">{scenario.subject || "Без темы"}</h1>
+            <h1 className="email-subject">{scenario.subject}</h1>
             
             <div className="email-thread">
               {history.map((step, index) => (
-                <div 
-                  key={index} 
-                  className={`email-card-animation ${step.from === 'System' ? 'system-note' : 'email-message'}`}
-                >
-                  {step.from !== 'System' && (
-                    <div className="email-meta">
-                      <div className="sender-avatar">{step.from[0]}</div>
-                      <div className="sender-info">
-                        <div className="sender-row">
-                          <span className="sender-name">{step.from}</span>
-                          <span className="email-time">10:45 (2 мин. назад)</span>
-                        </div>
-                        <div className="recipient-row">кому: мне ▾</div>
+                <div key={index} className="email-message-wrapper">
+                  <div className="email-meta">
+                    <div className="sender-avatar">{step.from[0]}</div>
+                    <div className="sender-info">
+                      <div className="sender-row">
+                        {/* ЗОНА АНАЛИЗА: ОТПРАВИТЕЛЬ */}
+                        <span 
+                          className={`detect-zone ${activeHint?.id === 'sender' ? 'scanned' : ''}`}
+                          onMouseEnter={() => setActiveHint({id: 'sender', title: 'АНАЛИЗ ОТПРАВИТЕЛЯ', text: step.hints?.sender})}
+                        >
+                          <strong>{step.from}</strong>
+                        </span>
+                        <span className="email-time">10:45</span>
                       </div>
+                      <div className="recipient-row">кому: мне ▾</div>
                     </div>
-                  )}
-
-                  <div className="email-body-text">
-                    {step.text.split('\n').map((line, i) => (
-                      <p key={i}>{line}</p>
-                    ))}
                   </div>
 
-                  {/* Кнопки ответов (только для последнего сообщения в истории) */}
+                  <div className="email-body-text">
+                    {step.text.split('\n').map((line, i) => <p key={i}>{line}</p>)}
+                    
+                    {step.trapButton && (
+                      <div 
+                        className={`detect-zone button-zone ${activeHint?.id === 'button' ? 'scanned' : ''}`}
+                        onMouseEnter={() => setActiveHint({id: 'button', title: 'ПРОВЕРКА ССЫЛКИ', text: step.hints?.button})}
+                      >
+                        <button className="gmail-mock-action">{step.trapButton.text}</button>
+                      </div>
+                    )}
+                  </div>
+
                   {!isEnded && index === history.length - 1 && step.answers && (
                     <div className="email-interactive-actions">
                       {step.answers.map((ans, i) => (
-                        <button 
-                          key={i} 
-                          className={ans.text.length > 20 ? "long-action-link" : "gmail-standard-btn"}
-                          onClick={() => handleAction(ans)}
-                        >
+                        <button key={i} className="gmail-standard-btn" onClick={() => handleAction(ans)}>
                           {ans.text}
                         </button>
                       ))}
@@ -143,53 +133,47 @@ const EmailScenarioPlayer = () => {
               ))}
             </div>
 
-            {/* Финальный экран внутри прокрутки */}
             {isEnded && (
               <div className="final-report-card">
-                <div className="report-header">
-                  <span className={`status-pill ${risk > 40 ? 'danger' : 'success'}`}>
-                    {risk > 40 ? 'Угроза' : 'Безопасно'}
-                  </span>
-                </div>
-                <h2>{risk > 40 ? 'Аккаунт скомпрометирован!' : 'Вы успешно отразили атаку!'}</h2>
-                <p>Ваши действия привели к уровню риска: <strong>{risk}%</strong></p>
-                
-                <div className="final-actions">
-                  <button className="retry-btn" onClick={() => window.location.reload()}>
-                    🔄 Переиграть
-                  </button>
-                  
-                  {nextId ? (
-                    <button className="next-btn" onClick={() => navigate(`/scenario/email/player/${nextId}`)}>
-                      ⏩ Следующий кейс
-                    </button>
-                  ) : (
-                    <button className="exit-btn" onClick={() => navigate("/scenario/email")}>
-                      🏠 В меню
-                    </button>
-                  )}
-                </div>
+                <div className="status-pill">{risk > 40 ? 'Угроза обнаружена' : 'Чисто'}</div>
+                <h2>Симуляция завершена</h2>
+                <button className="next-btn" onClick={() => navigate("/scenario/email")}>В МЕНЮ</button>
               </div>
             )}
           </div>
         </section>
-      </div>
 
-      {/* Плашка уровня опасности */}
-      <div className={`risk-meter-fixed ${risk > 40 ? 'high-risk' : ''}`}>
-        <div className="risk-text">
-          <span>Уровень опасности:</span>
-          <strong>{risk}%</strong>
-        </div>
-        <div className="meter-bg">
-          <div 
-            className="meter-fill" 
-            style={{ 
-              width: `${Math.min(risk, 100)}%`,
-              background: risk > 60 ? '#ea4335' : (risk > 30 ? '#fbbc05' : '#34a853')
-            }}
-          ></div>
-        </div>
+        {/* 3. RIGHT ANALYSIS PANEL (Та самая панель справа) */}
+        <aside className="analysis-panel">
+          <div className="panel-header">
+            <ShieldCheck size={20} />
+            <span>АНАЛИЗАТОР УГРОЗ</span>
+          </div>
+          
+          <div className="panel-content">
+            {activeHint ? (
+              <div className="hint-active animate-fade">
+                <h4>{activeHint.title}</h4>
+                <div className="hint-body">
+                  <AlertTriangle size={16} className="warn-icon" />
+                  <p>{activeHint.text}</p>
+                </div>
+              </div>
+            ) : (
+              <div className="hint-placeholder">
+                <Info size={32} />
+                <p>Наведите на подсвеченные области в письме для запуска сканирования...</p>
+              </div>
+            )}
+          </div>
+
+          <div className="panel-footer">
+            <div className="risk-header">УРОВЕНЬ РИСКА: {risk}%</div>
+            <div className="risk-bar-container">
+              <div className="risk-bar-fill" style={{ width: `${risk}%`, background: risk > 50 ? '#f43f5e' : '#10b981' }}></div>
+            </div>
+          </div>
+        </aside>
       </div>
     </div>
   );
