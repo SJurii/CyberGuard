@@ -176,3 +176,273 @@
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* Админские элементы */
+.admin-badge-panel {
+    background: rgba(244, 63, 94, 0.1);
+    border: 1px solid #f43f5e;
+    color: #f43f5e;
+    padding: 6px 12px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    font-weight: 900;
+    margin-bottom: 20px;
+}
+
+.name-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.edit-trigger {
+    cursor: pointer;
+    opacity: 0.5;
+    transition: 0.3s;
+}
+
+.edit-trigger:hover {
+    opacity: 1;
+    color: var(--primary);
+}
+
+.edit-name-group {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+}
+
+.admin-input {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: #fff;
+    padding: 5px 10px;
+    font-size: 18px;
+    width: 150px;
+}
+
+.admin-actions-block {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.role-btn {
+    width: 100%;
+    padding: 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: 0.3s;
+}
+
+.role-btn.promote {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    border: 1px solid #10b981;
+}
+
+.role-btn.promote:hover { background: #10b981; color: #fff; }
+
+.role-btn.demote {
+    background: rgba(244, 63, 94, 0.1);
+    color: #f43f5e;
+    border: 1px solid #f43f5e;
+}
+
+.role-btn.demote:hover { background: #f43f5e; color: #fff; }
+
+.small { padding: 5px 8px; border-radius: 8px; border: none; cursor: pointer; }
+.save-btn { background: #10b981; color: white; }
+.cancel-btn { background: #64748b; color: white; }
+
+/* Заголовок секции */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.title-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.title-icon-gold {
+    color: #f59e0b;
+    filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.4));
+}
+
+.ach-count {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px border rgba(255, 255, 255, 0.1);
+}
+
+/* Сетка достижений */
+.achievements-modern-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+}
+
+/* Карточка достижения */
+.ach-card {
+    position: relative;
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    cursor: help;
+}
+
+.ach-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(30, 41, 59, 0.8);
+}
+
+/* Свечение сзади иконки */
+.ach-icon-wrapper {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    background: rgba(var(--ach-color-rgb), 0.1);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    z-index: 2;
+    color: var(--ach-color);
+    box-shadow: inset 0 0 15px rgba(var(--ach-color-rgb), 0.2);
+}
+
+.ach-icon-svg {
+    filter: drop-shadow(0 0 5px var(--ach-color));
+}
+
+.ach-card-content h4 {
+    font-size: 0.95rem;
+    margin: 0;
+    color: #f8fafc;
+}
+
+.ach-date {
+    font-size: 0.7rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Тултип с описанием */
+.ach-tooltip {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(15, 23, 42, 0.95);
+    padding: 10px;
+    font-size: 0.75rem;
+    color: #cbd5e1;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ach-card:hover .ach-tooltip {
+    transform: translateY(0);
+}
+
+/* Пустое состояние */
+.ach-empty-state {
+    grid-column: 1 / -1;
+    padding: 40px;
+    text-align: center;
+    color: #64748b;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 20px;
+    border: 2px dashed rgba(255, 255, 255, 0.05);
+}
+
+.empty-icon-wrap {
+    margin-bottom: 12px;
+    opacity: 0.3;
+}
+
+/* Контейнер для иконки и текста в ряд */
+.ach-card-top {
+    display: flex;
+    align-items: center; /* Центрируем иконку относительно текста */
+    gap: 16px;
+    width: 100%;
+    z-index: 2;
+}
+
+/* Строка со статусом и названием */
+.ach-status-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap; /* Чтобы не переносилось на новую строку */
+}
+
+.ach-title {
+    margin: 0 !important;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #f8fafc;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Если название слишком длинное, будет троеточие */
+}
+
+.ach-date {
+    font-size: 0.7rem;
+    color: #10b981; /* Сделаем "Разблокировано" зеленым для акцента */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+}
+
+.ach-dot {
+    color: #475569;
+    font-size: 0.8rem;
+}
+
+.ach-description-simple {
+    margin: 4px 0 0 0;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Ограничиваем описание двумя строками */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Сетка (убедись, что minmax позволяет карточке быть достаточно широкой для текста в ряд) */
+.achievements-modern-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+}
