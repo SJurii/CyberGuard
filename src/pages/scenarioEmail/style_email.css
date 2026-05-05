@@ -171,3 +171,53 @@
     color: #fff;
     border-radius: 4px;
 }
+
+/* Шапка с кнопками */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(15px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.header_nav {
+  display: flex;
+  gap: 15px;
+}
+
+/* Стеклянные кнопки */
+.nav_glass_btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  color: #94a3b8;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav_glass_btn:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Индивидуальные цвета при наведении */
+.nav_glass_btn:nth-child(2):hover { color: #a855f7; box-shadow: 0 0 15px rgba(168, 85, 247, 0.2); } /* Карта - фиолетовый */
+.nav_glass_btn:nth-child(3):hover { color: #3b82f6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); }  /* Профиль - синий */
+
+/* Исправление адаптивности хедера */
+@media (max-width: 900px) {
+  .header { flex-direction: column; gap: 20px; text-align: center; }
+}

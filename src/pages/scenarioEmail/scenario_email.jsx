@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate, NavLink } from "react-router-dom";
+import { 
+  Mail, ShieldAlert, Fingerprint, MousePointer2, 
+  LayoutGrid, User, Home, ArrowLeft, Info, AlertTriangle 
+} from "lucide-react";
 import "../scenarioEmail/style_email.css"; 
-import { NavLink } from "react-router-dom";
-import { Mail, ShieldAlert, Fingerprint, MousePointer2 } from "lucide-react";
 
 const ScenarioEmail = () => {
+  const navigate = useNavigate();
   const [activeHint, setActiveHint] = useState(null);
   const [showWarning, setShowWarning] = useState(false);
 
@@ -36,37 +40,64 @@ const ScenarioEmail = () => {
 
   return (
     <div className="email_page">
+      {/* ВЕРХНЯЯ ПАНЕЛЬ НАВИГАЦИИ */}
       <header className="header">
-        <h1 className="header_text">CASE_02: ЦИФРОВОЙ КЛОН</h1>
+        <div className="header_left">
+           <h1 className="header_text">CASE_02: ЦИФРОВОЙ КЛОН</h1>
+        </div>
+        
+        <nav className="header_nav">
+          <button className="nav_glass_btn" onClick={() => navigate('/dashboard')}>
+            <Home size={18} />
+            <span>Главная</span>
+          </button>
+          <button className="nav_glass_btn" onClick={() => navigate('/map')}>
+            <LayoutGrid size={18} />
+            <span>Карта</span>
+          </button>
+          <button className="nav_glass_btn" onClick={() => navigate('/profile')}>
+            <User size={18} />
+            <span>Профиль</span>
+          </button>
+        </nav>
       </header>
 
       <main className="content-wrapper">
-        <section className="simulation-container" style={{maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '40px', background: 'rgba(255,255,255,0.02)', padding: '50px', borderRadius: '40px', border: '1px solid rgba(255,255,255,0.05)'}}>
+        <section className="simulation-container">
           
+          {/* МОКАП GMAIL */}
           <div className="gmail-wrapper">
             <div className="gmail-mockup">
-              <div className="gmail-sidebar">
-                <div className="compose-btn">＋ COMPOSE</div>
+              <aside className="gmail-sidebar">
+                <button className="compose-btn" onClick={() => navigate('/map')}>
+                  <ArrowLeft size={16} />
+                  К КАРТЕ
+                </button>
                 <ul className="folders">
-                  <li className="active">📥 Inbox</li>
-                  <li>⭐ Starred</li>
-                  <li>📨 Sent</li>
-                  <li>🗑 Trash</li>
+                  <li className="active"><Mail size={16} /> Inbox</li>
+                  <li><Info size={16} /> Starred</li>
+                  <li><MousePointer2 size={16} /> Sent</li>
+                  <li><ShieldAlert size={16} /> Trash</li>
                 </ul>
-              </div>
+              </aside>
               
               <div className="gmail-content">
                 <div className="email-header-info">
-                  <h2 className={`target ${activeHint === 'security_tag' ? 'active' : ''}`} 
-                      onMouseEnter={() => setActiveHint('security_tag')}>
+                  <h2 
+                    className={`target ${activeHint === 'security_tag' ? 'active' : ''}`} 
+                    onMouseEnter={() => setActiveHint('security_tag')}
+                  >
                     [SECURITY ALERT] Unusual sign-in activity
                   </h2>
                   <div className="sender-line">
                     <div className="avatar">M</div>
                     <div className="sender-details">
-                      <span className={`target ${activeHint === 'sender' ? 'active' : ''}`} 
-                            onMouseEnter={() => setActiveHint('sender')}>
-                        <strong>Microsoft Security Team</strong> <span style={{opacity: 0.6}}>&lt;account-security@rnicrosoft.com&gt;</span>
+                      <span 
+                        className={`target ${activeHint === 'sender' ? 'active' : ''}`} 
+                        onMouseEnter={() => setActiveHint('sender')}
+                      >
+                        <strong>Microsoft Security Team</strong> 
+                        <span className="sender-email">&lt;account-security@rnicrosoft.com&gt;</span>
                       </span>
                     </div>
                   </div>
@@ -81,20 +112,25 @@ const ScenarioEmail = () => {
                   </div>
                   <p>If this was not you, please verify your identity to secure your account.</p>
                   
-                  <button className={`gmail-action-btn target ${activeHint === 'button' ? 'active' : ''}`}
-                          onMouseEnter={() => setActiveHint('button')}
-                          onClick={() => setShowWarning(true)}>
+                  <button 
+                    className={`gmail-action-btn target ${activeHint === 'button' ? 'active' : ''}`}
+                    onMouseEnter={() => setActiveHint('button')}
+                    onClick={() => setShowWarning(true)}
+                  >
                     SECURE ACCOUNT
                   </button>
                 </div>
 
+                {/* ПРЕДУПРЕЖДЕНИЕ ПРИ КЛИКЕ */}
                 {showWarning && (
                   <div className="warning-overlay-email">
                     <div className="warning-content">
-                      <ShieldAlert size={48} color="#f43f5e" style={{marginBottom: '20px'}} />
+                      <AlertTriangle size={48} color="#f43f5e" />
                       <h3>SESSION COMPROMISED</h3>
-                      <p>Вы перешли по фишинговой ссылке. Теперь у хакеров есть доступ к вашему токену авторизации.</p>
-                      <button className="btn_back" style={{background: '#f43f5e', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '10px', marginTop: '15px'}} onClick={() => setShowWarning(false)}>Вернуться</button>
+                      <p>Вы перешли по фишинговой ссылке. Теперь у злоумышленников есть доступ к вашему токену авторизации.</p>
+                      <button className="btn_back" onClick={() => setShowWarning(false)}>
+                        Вернуться к анализу
+                      </button>
                     </div>
                   </div>
                 )}
@@ -102,27 +138,33 @@ const ScenarioEmail = () => {
             </div>
           </div>
 
-          <div className="analysis-board">
+          {/* ПАНЕЛЬ АНАЛИЗА */}
+          <aside className="analysis-board">
             <h2>Протокол анализа</h2>
-            <div className="hint-display" style={{background: 'rgba(0,0,0,0.2)', padding: '25px', borderRadius: '20px', minHeight: '200px', border: '1px solid rgba(255,255,255,0.05)'}}>
+            <div className="hint-display">
               {activeHint ? (
                 <div className="animate-fade">
-                  <h4 style={{color: 'var(--secondary)', marginBottom: '10px'}}>{hints.find(h => h.id === activeHint).title}</h4>
+                  <h4 className="hint-title">{hints.find(h => h.id === activeHint).title}</h4>
                   <p className="hint-text">{hints.find(h => h.id === activeHint).text}</p>
                 </div>
               ) : (
-                <p style={{opacity: 0.5}}>Наведите на элементы интерфейса слева для расшифровки угроз...</p>
+                <div className="hint-placeholder">
+                  <MousePointer2 size={32} />
+                  <p>Наведите на элементы интерфейса слева для расшифровки угроз...</p>
+                </div>
               )}
             </div>
-            <div className="quick-facts" style={{marginTop: '30px'}}>
-               <div className="fact" style={{display:'flex', gap: '10px', fontSize: '14px', color: '#94a3b8'}}>
-                  <Fingerprint size={18} color="var(--secondary)" />
-                  <span><strong>92%</strong> фишинговых атак используют подмену символов.</span>
+            
+            <div className="quick-facts">
+               <div className="fact">
+                  <Fingerprint size={18} />
+                  <span><strong>92%</strong> атак социальной инженерии используют визуальное сходство доменов.</span>
                </div>
             </div>
-          </div>
+          </aside>
         </section>
 
+        {/* БЛОКИ ОБУЧЕНИЯ */}
         <section className="learning-blocks">
           <div className="learn-card">
             <h3>DNS & Домены</h3>
@@ -138,8 +180,9 @@ const ScenarioEmail = () => {
           </div>
         </section>
 
-        <section className="final-action" style={{textAlign: 'center', marginTop: '40px'}}>
-            <NavLink className="start-btn-premium" style={{padding: '20px 60px', textDecoration: 'none', fontSize: '20px'}} to="/scenario/email/player/lottery_scam">
+        {/* ФИНАЛЬНОЕ ДЕЙСТВИЕ */}
+        <section className="final-action">
+            <NavLink className="start-btn-premium" to="/scenario/email/lottery_scam">
               НАЧАТЬ МИССИЮ
             </NavLink>
         </section>
