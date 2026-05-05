@@ -206,3 +206,115 @@
     .dashboard-grid { grid-template-columns: 1fr; }
     .welcome-header h1 { font-size: 32px; }
 }
+
+.welcome-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 40px;
+}
+
+.header-nav-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.nav-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+}
+
+.nav-action-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.profile-btn:hover {
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); /* Синее свечение */
+  color: #3b82f6;
+}
+
+.map-btn:hover {
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.4); /* Фиолетовое свечение */
+  color: #a855f7;
+}
+
+/* Адаптивность для мобилок */
+@media (max-width: 768px) {
+  .welcome-header {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .header-nav-buttons {
+    width: 100%;
+  }
+  .nav-action-btn {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+/* Общие стили кнопок в хедере */
+.header-nav-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.nav-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  color: #e2e8f0;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.nav-action-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Специфический стиль для кнопки Лидеров */
+.leaderboard-btn {
+  background: rgba(245, 158, 11, 0.05); /* Легкий золотистый фон */
+  border-color: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+}
+
+.leaderboard-btn:hover {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: #fbbf24;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+}
+
+.leaderboard-btn svg {
+  filter: drop-shadow(0 0 5px rgba(255, 191, 0, 0.5));
+}
+
+/* Для мобильных устройств, если кнопок станет слишком много */
+@media (max-width: 768px) {
+  .header-nav-buttons {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}

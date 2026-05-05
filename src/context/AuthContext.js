@@ -14,6 +14,16 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
+  // Функция для обновления данных профиля (например, баллов) без перезагрузки
+const updateProfile = (newData) => {
+  setUser(prevUser => {
+    const updatedUser = { ...prevUser, ...newData };
+    // Важно: обновляем и localStorage, чтобы после F5 баллы не откатились назад
+    localStorage.setItem("userData", JSON.stringify(updatedUser));
+    return updatedUser;
+  });
+};
+
   // 2. Функция входа (вызывается из компонента Login)
   const login = (userData) => {
     // Сохраняем в состояние (React увидит изменения сразу)
@@ -34,6 +44,7 @@ export const AuthProvider = ({ children }) => {
       user, 
       login, 
       logout, 
+      updateProfile,
       isAdmin: user?.role === 'ADMIN', // Удобный флаг
       isAuthenticated: !!user 
     }}>

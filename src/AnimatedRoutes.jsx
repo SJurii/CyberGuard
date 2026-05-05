@@ -11,6 +11,7 @@ import MapPage from "./pages/map/map";
 import Leaderboard from "./pages/leader_board/leader_board";
 import ScenarioEmail from "./pages/scenarioEmail/scenario_email";
 import Dashboard from "./pages/main/Dashboard";
+import EmailScenarioPlayer from "./pages/scenarioEmail/EmailScenarioPlayer/email_scenario_player";
 
 const pageVariants = {
   initial: { opacity: 0, x: -50 },
@@ -34,9 +35,13 @@ function AnimatedRoutes() {
         <Route path="/scenario_sms" element={<PageWrapper><ScenarioSMS /></PageWrapper>} />
         <Route path="/scenario/email" element={<PageWrapper><ScenarioEmail /></PageWrapper>} />
 
-        {/* УНИВЕРСАЛЬНЫЙ ПЛЕЕР СЦЕНАРИЕВ */}
-        {/* Теперь он обрабатывает и /scenario/sms/name, и /scenario/email/name */}
-        <Route path="/scenario/:type/:scenarioId" element={<PageWrapper><FakeSmsChat /></PageWrapper>} />
+        {/* УНИВЕРСАЛЬНЫЙ ПЛЕЕР СЦЕНАРИЕВ — РАЗДЕЛЯЕМ */}
+        {/* Для SMS оставляем FakeSmsChat */}
+        <Route path="/scenario/sms/:scenarioId" element={<PageWrapper><FakeSmsChat /></PageWrapper>} />
+
+        {/* Для Email ставим твой компонент плеера почты */}
+        <Route path="/scenario/email/:scenarioId" element={<PageWrapper><EmailScenarioPlayer /></PageWrapper>} />
+        
 
         {/* Карта и Лидерборд */}
         <Route path="/map" element={<PageWrapper><MapPage /></PageWrapper>} />
