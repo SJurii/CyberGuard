@@ -5,7 +5,7 @@ import "../profile/styles/profile.css";
 import { useAuth } from "../../context/AuthContext";
 
 const Profile = () => {
-  const { user: currentUser } = useAuth(); // Тот, кто смотрит страницу
+  const { user: currentUser, updateProfile } = useAuth();// Тот, кто смотрит страницу
   const myId = currentUser?.id;
   const { id } = useParams();
   const navigate = useNavigate();
@@ -48,6 +48,7 @@ const Profile = () => {
 
   const handleUpdateName = () => {
     const token = localStorage.getItem("userToken");
+    
     fetch(`http://localhost:8080/api/admin/users/${targetId}/update-name`, {
         method: "PATCH",
         headers: { 
@@ -56,11 +57,26 @@ const Profile = () => {
         },
         body: JSON.stringify({ name: newName })
     })
-    .then(res => {
+    .then(async res => {
         if (res.ok) {
-            setUserData({...userData, name: newName});
+            // 1. Обновляем данные в текущем компоненте
+            setUserData(prev => ({ ...prev, name: newName }));
+            
+            // 2. Если мы редактируем СВОЙ профиль, обновляем данные в AuthContext
+            if (myProfile && updateProfile) {
+                updateProfile({ ...currentUser, name: newName });
+            }
+            
             setIsEditing(false);
+            alert("Имя успешно обновлено");
+        } else {
+            const error = await res.text();
+            alert("Ошибка: " + error);
         }
+    })
+    .catch(err => {
+        console.error("Update error:", err);
+        alert("Ошибка соединения с сервером");
     });
   };
 
