@@ -13,6 +13,7 @@ import ScenarioEmail from "./pages/scenarioEmail/scenario_email";
 import Dashboard from "./pages/main/Dashboard";
 import EmailScenarioPlayer from "./pages/scenarioEmail/EmailScenarioPlayer/email_scenario_player";
 import AdminAchievementsPage from "./pages/adminAchivement/AdminAchievementsPage";
+import AdminUsersPage from "./pages/adminUsersPage/adminUsersPage";
 
 const pageVariants = {
   initial: { opacity: 0, x: -50 },
@@ -43,7 +44,7 @@ function AnimatedRoutes() {
 
         {/* Для Email ставим твой компонент плеера почты */}
         <Route path="/scenario/email/:scenarioId" element={<PageWrapper><EmailScenarioPlayer /></PageWrapper>} />
-        
+        <Route path="/admin/users" element={<PageWrapper><AdminUsersPage /></PageWrapper>} />
 
         {/* Карта и Лидерборд */}
         <Route path="/map" element={<PageWrapper><MapPage /></PageWrapper>} />

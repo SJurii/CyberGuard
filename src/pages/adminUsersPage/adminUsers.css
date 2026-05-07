@@ -1,0 +1,124 @@
+.admin-users-page {
+    min-height: 100vh;
+    background: #0f172a;
+    padding: 50px;
+    color: white;
+}
+
+.admin-users-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.admin-users-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    gap: 20px;
+}
+
+.admin-users-header h1 {
+    font-size: 42px;
+    font-weight: 900;
+}
+
+.admin-users-header p {
+    color: #94a3b8;
+    margin-top: 10px;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.05);
+    padding: 14px 18px;
+    border-radius: 16px;
+    min-width: 320px;
+}
+
+.search-box input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    width: 100%;
+}
+
+.users-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+}
+
+.user-card-admin {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 24px;
+    padding: 24px;
+    cursor: pointer;
+    transition: 0.3s;
+    backdrop-filter: blur(15px);
+}
+
+.user-card-admin:hover {
+    transform: translateY(-5px);
+    border-color: #6366f1;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.user-card-top {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+}
+
+.user-avatar-admin {
+    width: 60px;
+    height: 60px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-card-top h3 {
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+.user-card-top p {
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.user-card-bottom {
+    margin-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.role-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(16,185,129,0.15);
+    color: #10b981;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.role-badge.admin {
+    background: rgba(244,63,94,0.15);
+    color: #f43f5e;
+}
+
+.xp-label {
+    color: #cbd5e1;
+    font-weight: 700;
+}
