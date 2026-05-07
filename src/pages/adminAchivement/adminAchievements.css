@@ -1,0 +1,95 @@
+.admin-ach-page {
+    min-height: 100vh;
+    background: #0f172a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    color: white;
+}
+
+.admin-ach-card {
+    width: 100%;
+    max-width: 700px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 30px;
+    padding: 40px;
+    backdrop-filter: blur(20px);
+}
+
+.admin-ach-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.admin-ach-header h1 {
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.admin-ach-header p {
+    color: #94a3b8;
+    margin-top: 5px;
+}
+
+.back-btn-admin {
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
+    border: none;
+    background: rgba(255,255,255,0.06);
+    color: white;
+    cursor: pointer;
+}
+
+.admin-ach-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-group label {
+    color: #cbd5e1;
+    font-size: 14px;
+}
+
+.input-group input,
+.input-group textarea {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 14px;
+    color: white;
+    font-size: 15px;
+}
+
+.input-group textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.save-ach-btn {
+    margin-top: 10px;
+    height: 56px;
+    border: none;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.save-ach-btn:hover {
+    transform: translateY(-2px);
+}

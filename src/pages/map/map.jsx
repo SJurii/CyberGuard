@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Mail, Database, Brain, Wifi, LockKeyhole, X } from 'lucide-react';
 import styles from "./styles/map.module.css"; 
+import { useLocation } from "react-router-dom";
 
 const scenarios = [
   { id: 1, title: 'SMS-Фишинг', difficulty: 'Легко', path: '/scenario_sms', icon: <Mail size={40} strokeWidth={1} />, color: '14, 165, 233', status: 'available' },
@@ -15,6 +16,7 @@ const MapPage = () => {
   const navigate = useNavigate(); 
   const [userRole, setUserRole] = useState(null);
   const [isAdminEditing, setIsAdminEditing] = useState(false);
+  const location = useLocation();
   
   
   // Состояние для нового сценария под структуру твоей БД
@@ -26,6 +28,12 @@ const MapPage = () => {
   });
 
   useEffect(() => {
+    if (location.state?.openEditor) {
+      setIsAdminEditing(true);
+    }
+  }, [location.state]);
+
+  useEffect(() => {
     const rawData = localStorage.getItem("userData");
     if (rawData) {
       try {
@@ -35,6 +43,7 @@ const MapPage = () => {
         console.error("Ошибка парсинга данных пользователя:", e);
       }
     }
+    
 
     const handleScroll = () => {
       const scrolled = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
@@ -60,7 +69,7 @@ const MapPage = () => {
           : newScenario.content
       };
 
-      const response = await fetch('http://localhost:8080/api/admin/scenarios', {
+      const response = await fetch('http://localhost:8080/api/scenarios', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

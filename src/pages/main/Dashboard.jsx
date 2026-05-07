@@ -10,6 +10,7 @@ import { useAuth } from "../../context/AuthContext";
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [adminOpen, setAdminOpen] = React.useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -108,18 +109,53 @@ const Dashboard = () => {
         {/* 4. СЕКЦИЯ ДЛЯ АДМИНА */}
         {isAdmin && (
           <div className="admin-dashboard-section animate-fade">
+            
             <h3>Центр Управления (ADMIN)</h3>
+
             <p style={{color: '#94a3b8', marginBottom: '20px', fontSize: '14px'}}>
-               У вас есть доступ к редактированию контента и управлению пользователями.
+              У вас есть доступ к редактированию контента и управлению системой.
             </p>
-            <div className="admin-actions">
-                <button className="admin-btn" onClick={() => navigate('/admin/users')}>
-                  <Users size={16} style={{marginRight: '8px', display: 'inline'}}/> Управление пользователями
+
+            {/* ОДНА КНОПКА УПРАВЛЕНИЯ */}
+            <button
+              className="admin-btn main-admin-btn"
+              onClick={() => setAdminOpen(!adminOpen)}
+            >
+              <LayoutGrid size={16} style={{marginRight: '8px', display: 'inline'}}/>
+              Управление
+            </button>
+
+            {/* РАСКРЫВАЮЩЕЕСЯ МЕНЮ */}
+            {adminOpen && (
+              <div className="admin-actions expanded">
+                
+                <button
+                  className="admin-btn"
+                  onClick={() => navigate('/admin/users')}
+                >
+                  <Users size={16} style={{marginRight: '8px', display: 'inline'}}/>
+                  Управление пользователями
                 </button>
-                <button className="admin-btn" onClick={() => navigate('/map')}>
-                  <LayoutGrid size={16} style={{marginRight: '8px', display: 'inline'}}/> Редактор карты
+
+                <button
+                  className="admin-btn"
+                  onClick={() => navigate('/map', { state: { openEditor: true } })}
+                >
+                  <MapIcon size={16} style={{marginRight: '8px', display: 'inline'}}/>
+                  Сценарии (редактор)
                 </button>
-            </div>
+
+                <button
+                  className="admin-btn"
+                  onClick={() => navigate('/adminAchievements')}
+                >
+                  <Trophy size={16} style={{marginRight: '8px', display: 'inline'}}/>
+                  Добавление достижений
+                </button>
+
+              </div>
+            )}
+
           </div>
         )}
       </main>
