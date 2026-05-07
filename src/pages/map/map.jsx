@@ -27,6 +27,103 @@ const MapPage = () => {
     content: { start: "step1", steps: { step1: { from: "", text: "", options: [] } } }
   });
 
+  const [allScenarios, setAllScenarios] = useState([]);
+  const [searchScenario, setSearchScenario] = useState("");
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editingScenarioId, setEditingScenarioId] = useState(null);
+  const [showScenarioList, setShowScenarioList] = useState(false);
+
+  const fetchScenarios = async () => {
+    try {
+
+      const response = await fetch("http://localhost:8080/api/scenarios");
+
+      if (response.ok) {
+
+        const data = await response.json();
+
+        setAllScenarios(data);
+
+      }
+
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleEditScenario = (scenario) => {
+
+    setIsEditMode(true);
+
+    setEditingScenarioId(scenario.id);
+
+    setNewScenario({
+      name: scenario.name || "",
+      title: scenario.title || "",
+      type: scenario.type || "Email",
+
+      content:
+        typeof scenario.content === "object"
+          ? JSON.stringify(scenario.content, null, 2)
+          : scenario.content
+    });
+
+    setShowScenarioList(false);
+  };
+
+  const handleUpdateScenario = async () => {
+
+    const token = localStorage.getItem("userToken");
+
+    try {
+
+      const payload = {
+
+        ...newScenario,
+
+        content:
+          typeof newScenario.content === "string"
+            ? JSON.parse(newScenario.content)
+            : newScenario.content
+      };
+
+      const response = await fetch(
+        `http://localhost:8080/api/scenarios/${editingScenarioId}`,
+        {
+          method: "PUT",
+
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify(payload)
+        }
+      );
+
+      if (response.ok) {
+
+        alert("Сценарий обновлен");
+
+        setIsEditMode(false);
+
+        setEditingScenarioId(null);
+
+        fetchScenarios();
+
+      } else {
+
+        alert("Ошибка обновления");
+      }
+
+    } catch (e) {
+
+      console.error(e);
+
+      alert("Ошибка JSON");
+    }
+  };
+
   useEffect(() => {
     if (location.state?.openEditor) {
       setIsAdminEditing(true);
@@ -42,8 +139,7 @@ const MapPage = () => {
       } catch (e) {
         console.error("Ошибка парсинга данных пользователя:", e);
       }
-    }
-    
+    } 
 
     const handleScroll = () => {
       const scrolled = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
@@ -111,15 +207,32 @@ const MapPage = () => {
           <h1 className={styles['map-title']}>КАРТА КИБЕР-УГРОЗ</h1>
           <div className={styles['header-side']}>
             
-            {userRole === 'ADMIN' && (
-              <button 
-                className={styles['toggle-editor-btn']} 
-                onClick={() => setIsAdminEditing(true)}
-              >
-                <LockKeyhole size={14} style={{ marginRight: '8px' }} />
-                Новая операция
-              </button>
-            )}
+
+      {userRole === 'ADMIN' && (
+
+        <div className={styles['admin-buttons-group']}>
+
+          <button
+            className={styles['toggle-editor-btn']}
+            onClick={() => setIsAdminEditing(true)}
+          >
+            <LockKeyhole size={14} style={{ marginRight: '8px' }} />
+            Новая операция
+          </button>
+
+          <button
+            className={styles['toggle-editor-btn']}
+            onClick={() => {
+              setShowScenarioList(true);
+              fetchScenarios();
+            }}
+          >
+            <Database size={14} style={{ marginRight: '8px' }} />
+            Редактировать
+          </button>
+
+        </div>
+        )}
 
             <button className={styles['profile-nav-btn']} onClick={() => navigate('/profile')}>
               <div className={styles['btn-icon-wrapper']}>
@@ -136,7 +249,11 @@ const MapPage = () => {
         <div className={styles['admin-modal-overlay']}>
           <div className={styles['admin-editor-card']}>
             <div className={styles['modal-header']}>
-              <h3>Добавление новой операции</h3>
+              <h3>
+                {isEditMode
+                  ? "Редактирование сценария"
+                  : "Добавление новой операции"}
+              </h3>
               <button onClick={() => setIsAdminEditing(false)} className={styles['close-modal-btn']}>
                 <X size={20} />
               </button>
@@ -193,11 +310,73 @@ const MapPage = () => {
                 />
               </div>
 
-              <button className={styles['save-scenario-btn']} onClick={handleCreateScenario}>
-                Записать в базу данных
+              <button
+                className={styles['save-scenario-btn']}
+                onClick={isEditMode ? handleUpdateScenario : handleCreateScenario}
+              >
+                {isEditMode
+                  ? "Обновить сценарий"
+                  : "Записать в базу данных"}
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {showScenarioList && (
+        <div className={styles['admin-modal-overlay']}>
+
+          <div className={styles['admin-editor-card']}>
+
+            <div className={styles['modal-header']}>
+              <h3>Редактирование сценариев</h3>
+
+              <button
+                onClick={() => setShowScenarioList(false)}
+                className={styles['close-modal-btn']}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className={styles['modal-body']}>
+
+              <input
+                type="text"
+                placeholder="Поиск сценария..."
+                value={searchScenario}
+                onChange={(e) => setSearchScenario(e.target.value)}
+                className={styles['search-input']}
+              />
+
+              <div className={styles['scenario-list']}>
+
+                {allScenarios
+                  .filter((s) =>
+                    s.title?.toLowerCase().includes(searchScenario.toLowerCase())
+                  )
+                  .map((scenario) => (
+
+                    <div
+                      key={scenario.id}
+                      className={styles['scenario-list-item']}
+                      onClick={() => {
+                        handleEditScenario(scenario);
+                        setIsAdminEditing(true);
+                      }}
+                    >
+                      <h4>{scenario.title}</h4>
+                      <p>{scenario.type}</p>
+                    </div>
+
+                  ))}
+
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
       )}
 
