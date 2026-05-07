@@ -173,6 +173,7 @@ const Profile = () => {
 
           {isAdmin && !myProfile && (
             <div className="admin-actions-block">
+              
               {userData.role === "ADMIN" ? (
                 <button className="role-btn demote" onClick={() => handleChangeRole("USER")}>
                    <Icons.UserMinus size={14}/> Снять админа

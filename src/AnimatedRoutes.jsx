@@ -12,6 +12,7 @@ import Leaderboard from "./pages/leader_board/leader_board";
 import ScenarioEmail from "./pages/scenarioEmail/scenario_email";
 import Dashboard from "./pages/main/Dashboard";
 import EmailScenarioPlayer from "./pages/scenarioEmail/EmailScenarioPlayer/email_scenario_player";
+import AdminAchievementsPage from "./pages/adminAchivement/AdminAchievementsPage";
 
 const pageVariants = {
   initial: { opacity: 0, x: -50 },
@@ -34,6 +35,7 @@ function AnimatedRoutes() {
         {/* Списки сценариев по категориям */}
         <Route path="/scenario_sms" element={<PageWrapper><ScenarioSMS /></PageWrapper>} />
         <Route path="/scenario/email" element={<PageWrapper><ScenarioEmail /></PageWrapper>} />
+        <Route path="/adminAchievements" element={<PageWrapper><AdminAchievementsPage /></PageWrapper>} />
 
         {/* УНИВЕРСАЛЬНЫЙ ПЛЕЕР СЦЕНАРИЕВ — РАЗДЕЛЯЕМ */}
         {/* Для SMS оставляем FakeSmsChat */}
