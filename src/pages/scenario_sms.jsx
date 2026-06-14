@@ -111,7 +111,7 @@ const ScenarioSMS = () => {
             
             <div className="stats-mini">
               <span><ShieldCheck size={18} inline /> 5 Уровней</span>
-              <span>🔥 +50 XP за успех</span>
+              <span> +50 XP за успех</span>
             </div>
 
             <div className="btn-group">

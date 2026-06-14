@@ -6,6 +6,12 @@ import "./adminAchievements.css";
 const AdminAchievementsPage = () => {
 
   const navigate = useNavigate();
+  const [allAchievements, setAllAchievements] = useState([]);
+    const [searchAchievement, setSearchAchievement] = useState("");
+    const [showAchievementList, setShowAchievementList] = useState(false);
+
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [editingAchievementId, setEditingAchievementId] = useState(null);
 
   const [achievement, setAchievement] = useState({
     achievementName: "",
@@ -15,13 +21,101 @@ const AdminAchievementsPage = () => {
     minPointer: 0
   });
 
+  const fetchAchievements = async () => {
+
+    try {
+
+        const token = localStorage.getItem("userToken");
+
+        const response = await fetch(
+        "http://localhost:8080/api/achievements",
+        {
+            headers: {
+            Authorization: `Bearer ${token}`
+            }
+        }
+        );
+
+        if (response.ok) {
+
+        const data = await response.json();
+
+        setAllAchievements(data);
+
+        }
+
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    const handleEditAchievement = (achievement) => {
+
+    setIsEditMode(true);
+
+    setEditingAchievementId(achievement.id);
+
+    setAchievement({
+        achievementName: achievement.achievementName || "",
+        title: achievement.title || "",
+        description: achievement.description || "",
+        iconName: achievement.iconName || "",
+        minPointer: achievement.minPointer || 0
+    });
+
+    setShowAchievementList(false);
+    };
+
+    const handleUpdateAchievement = async () => {
+
+  try {
+
+    const token = localStorage.getItem("userToken");
+
+    const response = await fetch(
+  `http://localhost:8080/api/achievements/${editingAchievementId}`,
+      {
+        method: "PUT",
+
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(achievement)
+      }
+    );
+
+    if (response.ok) {
+
+      alert("Достижение обновлено");
+
+      setIsEditMode(false);
+
+      setEditingAchievementId(null);
+
+      fetchAchievements();
+
+    } else {
+
+      alert("Ошибка обновления");
+    }
+
+  } catch (e) {
+
+    console.error(e);
+
+    alert("Ошибка сервера");
+  }
+};
+
   const handleSave = async () => {
 
     const token = localStorage.getItem("userToken");
 
     try {
 
-      const response = await fetch("http://localhost:8080/api/admin/achievements", {
+      const response = await fetch("http://localhost:8080/api/achievements", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -72,7 +166,13 @@ const AdminAchievementsPage = () => {
           </button>
 
           <div>
-            <h1>Добавление достижения</h1>
+            <h1>    
+            {
+                isEditMode
+                ? "Редактирование достижения"
+                : "Добавление достижения"
+            }
+            </h1>
             <p>Создание нового достижения для системы CyberGuard</p>
           </div>
 
@@ -154,10 +254,90 @@ const AdminAchievementsPage = () => {
             />
           </div>
 
-          <button className="save-ach-btn" onClick={handleSave}>
+          <button
+            className="save-ach-btn"
+            onClick={
+                isEditMode
+                ? handleUpdateAchievement
+                : handleSave
+            }
+            >
             <Save size={18}/>
-            Добавить достижение
+                    {
+                isEditMode
+                    ? "Обновить достижение"
+                    : "Добавить достижение"
+                }
           </button>
+          <button
+            className="admin-btn"
+            onClick={() => {
+                setShowAchievementList(true);
+                fetchAchievements();
+            }}
+            >
+            Редактировать достижения
+            </button>
+
+            {showAchievementList && (
+
+                <div className="admin-modal-overlay">
+
+                    <div className="admin-editor-card">
+
+                    <div className="modal-header">
+
+                        <h3>Редактирование достижений</h3>
+
+                        <button
+                        onClick={() => setShowAchievementList(false)}
+                        className="close-modal-btn"
+                        >
+                        ✕
+                        </button>
+
+                    </div>
+
+                    <div className="modal-body">
+
+                        <input
+                        type="text"
+                        placeholder="Поиск достижения..."
+                        value={searchAchievement}
+                        onChange={(e) => setSearchAchievement(e.target.value)}
+                        className="search-input"
+                        />
+
+                        <div className="scenario-list">
+
+                        {allAchievements
+                            .filter((a) =>
+                            a.title
+                                ?.toLowerCase()
+                                .includes(searchAchievement.toLowerCase())
+                            )
+                            .map((achievement) => (
+
+                            <div
+                                key={achievement.id}
+                                className="scenario-list-item"
+                                onClick={() => handleEditAchievement(achievement)}
+                            >
+                                <h4>{achievement.title}</h4>
+
+                                <p>{achievement.minPointer} XP</p>
+                            </div>
+
+                            ))}
+
+                        </div>
+
+                    </div>
+
+                    </div>
+
+                </div>
+                )}
 
         </div>
 
