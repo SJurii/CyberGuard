@@ -14,6 +14,8 @@ import Dashboard from "./pages/main/Dashboard";
 import EmailScenarioPlayer from "./pages/scenarioEmail/EmailScenarioPlayer/email_scenario_player";
 import AdminAchievementsPage from "./pages/adminAchivement/AdminAchievementsPage";
 import AdminUsersPage from "./pages/adminUsersPage/adminUsersPage";
+import SqcenarioSql from "./pages/scenarioSQL/infoSQL";
+import PlayerSQL from "./pages/scenarioSQL/playerSQL";
 
 const pageVariants = {
   initial: { opacity: 0, x: -50 },
@@ -37,6 +39,8 @@ function AnimatedRoutes() {
         <Route path="/scenario_sms" element={<PageWrapper><ScenarioSMS /></PageWrapper>} />
         <Route path="/scenario/email" element={<PageWrapper><ScenarioEmail /></PageWrapper>} />
         <Route path="/adminAchievements" element={<PageWrapper><AdminAchievementsPage /></PageWrapper>} />
+        <Route path="scenarioSQL/infoSQL" element={<PageWrapper><SqcenarioSql /></PageWrapper>} />
+        <Route path="scenarioSQL/playerSQL/:scenarioId" element={<PageWrapper><PlayerSQL /></PageWrapper>} />
 
         {/* УНИВЕРСАЛЬНЫЙ ПЛЕЕР СЦЕНАРИЕВ — РАЗДЕЛЯЕМ */}
         {/* Для SMS оставляем FakeSmsChat */}

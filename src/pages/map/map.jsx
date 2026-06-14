@@ -7,7 +7,7 @@ import { useLocation } from "react-router-dom";
 const scenarios = [
   { id: 1, title: 'SMS-Фишинг', difficulty: 'Легко', path: '/scenario_sms', icon: <Mail size={40} strokeWidth={1} />, color: '14, 165, 233', status: 'available' },
   { id: 2, title: 'Email-Фишинг', difficulty: 'Легко', path: '/scenario/email', icon: <Mail size={40} strokeWidth={1} />, color: '14, 165, 233', status: 'available' }, 
-  { id: 3, title: 'SQL Инъекция', difficulty: 'Средне', path: '/non', icon: <Database size={40} strokeWidth={1} />, color: '99, 102, 241', status: 'locked' },
+  { id: 3, title: 'SQL Инъекция', difficulty: 'Средне', path: '/scenarioSQL/infoSQL', icon: <Database size={40} strokeWidth={1} />, color: '99, 102, 241', status: 'locked' },
   { id: 4, title: 'Социальная инженерия', difficulty: 'Сложно', path: '/non', icon: <Brain size={40} strokeWidth={1} />, color: '245, 158, 11', status: 'locked' },
   { id: 5, title: 'Взлом Wi-Fi', difficulty: 'Хардкор', path: '/non', icon: <Wifi size={40} strokeWidth={1} />, color: '244, 63, 94', status: 'locked' },
 ];
@@ -32,6 +32,35 @@ const MapPage = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingScenarioId, setEditingScenarioId] = useState(null);
   const [showScenarioList, setShowScenarioList] = useState(false);
+  const [userPoints, setUserPoints] = useState(0);
+
+  const getLockedMessage = (scen) => {
+  if (scen.id === 3) return "Наберите 1000 баллов, чтобы открыть";
+  if (scen.id === 4) return "Наберите 1500 баллов, чтобы открыть";
+  if (scen.id === 5) return "Наберите 2000 баллов, чтобы открыть";
+  return "Сценарий заблокирован";
+};
+
+  useEffect(() => {
+    const rawData = localStorage.getItem("userData");
+
+    if (rawData) {
+      try {
+        const parsed = JSON.parse(rawData);
+        setUserRole(parsed.role);
+        setUserPoints(parsed.points || 0); 
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, []);
+
+  const getScenarioStatus = (scen) => {
+    if (scen.id === 3) return userPoints >= 1000 ? 'available' : 'locked';
+    if (scen.id === 4) return userPoints >= 1500 ? 'available' : 'locked';
+    if (scen.id === 5) return userPoints >= 2000 ? 'available' : 'locked';
+    return scen.status;
+  };
 
   const fetchScenarios = async () => {
     try {
@@ -381,35 +410,43 @@ const MapPage = () => {
       )}
 
       <div className={styles['scenarios-grid']}>
-        {scenarios.map((scen) => (
-          <div 
-            key={scen.id}
-            style={{ '--accent-color': scen.status === 'locked' ? '148, 163, 184' : scen.color }}
-            className={`${styles['scenario-card']} ${styles[scen.status]}`}
-          >
-            <div className={styles['card-icon']}>
+        {scenarios.map((scen) => {
+          const status = getScenarioStatus(scen); // 👈 главное изменение
+
+          return (
+            <div 
+              key={scen.id}
+              style={{ '--accent-color': status === 'locked' ? '148, 163, 184' : scen.color }}
+              className={`${styles['scenario-card']} ${styles[status]}`}
+            >
+              <div className={styles['card-icon']}>
                 {scen.icon}
-            </div>
-            <div className={styles['card-content']}>
-              <h3>{scen.title}</h3>
-              <span className={styles['difficulty-tag']}>{scen.difficulty}</span>
-            </div>
-            
-            {scen.status === 'locked' ? (
-              <div className={styles['lock-overlay']}>
-                <LockKeyhole size={16} /> 
-                Заблокировано
               </div>
-            ) : (
-              <button 
-                className={styles['start-btn']} 
-                onClick={() => handleStart(scen.path, scen.status)}
-              >
-                {scen.status === 'completed' ? 'Повторить' : 'Начать миссию'}
-              </button>
-            )}
-          </div>
-        ))}
+
+              <div className={styles['card-content']}>
+                <h3>{scen.title}</h3>
+                <span className={styles['difficulty-tag']}>
+                  {scen.difficulty}
+                </span>
+              </div>
+
+              {status === 'locked' ? (
+                <div className={styles['lock-overlay']}>
+                  {getLockedMessage(scen)}
+                  <LockKeyhole size={16} /> 
+                  Заблокировано
+                </div>
+              ) : (
+                <button 
+                  className={styles['start-btn']} 
+                  onClick={() => handleStart(scen.path, status)}
+                >
+                  {status === 'completed' ? 'Повторить' : 'Начать миссию'}
+                </button>
+              )}
+            </div>
+          );
+        })}
       </div>
 
       <div className={styles['goHome']}>
