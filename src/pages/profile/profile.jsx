@@ -187,9 +187,10 @@ const Profile = () => {
           )}
 
           <div className="sidebar-actions">
-            <NavLink to="/dashboard" className="back-link">
-                <button className="back-btn">На главную</button>
+            <NavLink to="/dashboard" className="back-btn" style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
+                На главную
             </NavLink>
+            
             {myProfile && (
               <button className="logout-btn" onClick={() => { localStorage.clear(); navigate("/login"); }}>
                 Терминировать сессию

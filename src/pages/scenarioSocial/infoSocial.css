@@ -1,0 +1,495 @@
+:root {
+  --se-main-bg: #090d16;
+  --se-card-bg: #111827;
+  --se-borders: #1f2937;
+  --se-purple: #8b5cf6;
+  --se-text: #e5e7eb;
+}
+
+.se-page-container {
+  background-color: var(--se-main-bg);
+  min-height: 100vh;
+  color: var(--se-text);
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  padding-bottom: 60px;
+}
+
+/* Навигационная панель */
+.se-main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background: rgba(17, 24, 39, 0.7);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--se-borders);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.se-header-title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  background: linear-gradient(90deg, #a78bfa, #f43f5e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+}
+
+.se-header-nav {
+  display: flex;
+  gap: 15px;
+}
+
+.se-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--se-borders);
+  color: #9ca3af;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.se-nav-btn:hover {
+  background: rgba(139, 92, 246, 0.1);
+  color: #fff;
+  border-color: var(--se-purple);
+}
+
+/* Сетка и Пропорции (Левая часть шире!) */
+.se-simulation-grid {
+  display: flex;
+  gap: 30px;
+  padding: 40px;
+  align-items: flex-start;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.se-messenger-box {
+  flex: 2.8; 
+  min-width: 0;
+}
+
+.se-analysis-sidebar {
+  flex: 1;
+  min-width: 320px;
+  background: var(--se-card-bg);
+  border: 1px solid var(--se-borders);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.se-analysis-sidebar h2 {
+  font-size: 18px;
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+/* Мокап Мессенджера */
+.se-messenger-frame {
+  display: flex;
+  background: var(--se-card-bg);
+  border: 1px solid var(--se-borders);
+  border-radius: 16px;
+  height: 560px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+.se-messenger-sidebar {
+  width: 260px;
+  background: #0b0f19;
+  border-right: 1px solid var(--se-borders);
+  padding: 25px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.se-sidebar-back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.se-sidebar-back-btn:hover {
+  opacity: 0.9;
+}
+
+.se-sidebar-section-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #4b5563;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding-left: 10px;
+}
+
+.se-chat-channels-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.se-channel-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  color: #9ca3af;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.se-channel-item.active {
+  background: rgba(139, 92, 246, 0.15);
+  color: #c084fc;
+  font-weight: 600;
+}
+
+/* Основной контейнер чата */
+.se-messenger-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #0f172a;
+  position: relative;
+}
+
+.se-chat-top-bar {
+  padding: 22px 35px;
+  border-bottom: 1px solid var(--se-borders);
+  background: rgba(15, 23, 42, 0.9);
+}
+
+.se-chat-meta-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.se-chat-meta-wrapper h2 {
+  font-size: 17px;
+  color: #fff;
+  font-weight: 700;
+  margin: 0;
+}
+
+.se-chat-top-bar p {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 5px 0 0 0;
+}
+
+.se-chat-history-viewport {
+  flex: 1;
+  padding: 30px 35px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+}
+
+/* Сообщения */
+.se-chat-message-row {
+  display: flex;
+  gap: 18px;
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(31, 41, 55, 0.25);
+  border: 1px solid transparent;
+  transition: all 0.25s ease;
+}
+
+.se-chat-message-row.target:hover, 
+.se-chat-message-row.target.active {
+  border-color: var(--se-purple);
+  background: rgba(139, 92, 246, 0.08);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.12);
+}
+
+.se-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.se-avatar-ceo { background: #6d28d9; color: #fff; }
+.se-avatar-alert { background: #b91c1c; color: #fff; }
+.se-avatar-link { background: #0369a1; color: #fff; }
+
+.se-message-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.se-author-name {
+  font-weight: 600;
+  font-size: 15px;
+  color: #f3f4f6;
+}
+
+.se-message-time {
+  font-size: 11px;
+  color: #4b5563;
+  margin-left: 8px;
+}
+
+.se-message-body {
+  font-size: 14.5px;
+  color: #cbd5e1;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.se-highlight-authority {
+  border-left: 4px solid #a78bfa;
+  padding-left: 10px;
+}
+
+.se-highlight-urgency {
+  border-left: 4px solid #f43f5e;
+  padding-left: 10px;
+}
+
+.se-fake-phishing-link {
+  color: #38bdf8;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-left: 6px;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.se-fake-phishing-link:hover {
+  color: #f43f5e;
+}
+
+/* Всплывающие подсказки анализа */
+.se-hint-display-zone {
+  background: #0f172a;
+  border: 1px solid var(--se-borders);
+  border-radius: 12px;
+  padding: 20px;
+  min-height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.se-hint-placeholder-wrapper {
+  text-align: center;
+  color: #4b5563;
+}
+
+.se-hint-placeholder-wrapper p {
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+.se-hint-card-title {
+  color: #f43f5e;
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+}
+
+.se-hint-card-text {
+  font-size: 13.5px;
+  color: #9ca3af;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.se-quick-facts-container {
+  margin-top: 20px;
+}
+
+.se-fact-row {
+  display: flex;
+  gap: 12px;
+  background: rgba(244, 63, 94, 0.05);
+  border: 1px solid rgba(244, 63, 94, 0.15);
+  padding: 15px;
+  border-radius: 10px;
+  font-size: 13px;
+  color: #cbd5e1;
+  line-height: 1.4;
+}
+
+/* Блоки теории снизу */
+.se-learning-grid-blocks {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  padding: 0 40px;
+  max-width: 1600px;
+  margin: 0 auto 40px auto;
+}
+
+.se-theory-card {
+  background: var(--se-card-bg);
+  border: 1px solid var(--se-borders);
+  border-radius: 16px;
+  padding: 28px;
+}
+
+.se-theory-card h3 {
+  font-size: 18px;
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #fff;
+}
+
+.se-theory-card p {
+  font-size: 14px;
+  color: #9ca3af;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.se-theory-card ul {
+  padding-left: 20px;
+  margin: 0;
+}
+
+.se-theory-card li {
+  font-size: 14px;
+  color: #9ca3af;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.se-theory-card.danger {
+  border-color: rgba(244, 63, 94, 0.3);
+}
+
+/* Зона финальной кнопки */
+.se-bottom-action-zone {
+  display: flex;
+  justify-content: center;
+  padding: 0 40px;
+}
+
+.se-start-simulation-btn {
+  display: inline-block;
+  text-decoration: none;
+  padding: 16px 40px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%);
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+  color: #fff;
+}
+
+.se-start-simulation-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 25px rgba(217, 70, 239, 0.5);
+}
+
+/* Модалка */
+.se-warning-modal-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 5;
+}
+
+.se-warning-modal-content {
+  background: #1e1b4b;
+  border: 1px solid #f43f5e;
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 450px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.se-warning-modal-content h3 {
+  color: #f43f5e;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.se-warning-modal-content p {
+  font-size: 14px;
+  color: #cbd5e1;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.se-modal-close-btn {
+  background: #334155;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.se-modal-close-btn:hover {
+  background: #475569;
+}
+
+/* Анимации */
+.se-pulse-animation {
+  animation: se-pulse 2s infinite;
+}
+
+@keyframes se-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.se-fade-in-animation {
+  animation: se-fadeIn 0.25s ease-out forwards;
+}
+
+@keyframes se-fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}

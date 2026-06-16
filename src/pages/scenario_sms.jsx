@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "../styles/style_sms.css";
-import { NavLink } from "react-router-dom";
-import { AlertTriangle, ShieldCheck, Zap } from "lucide-react"; // Если используешь lucide-react
+import { NavLink, useNavigate } from "react-router-dom";
+import { AlertTriangle, ShieldCheck, Zap } from "lucide-react";
 
 const ScenarioSMS = () => {
+  const navigate = useNavigate();
   const [activeHint, setActiveHint] = useState(null);
   const [showWarning, setShowWarning] = useState(false);
 
@@ -25,8 +26,44 @@ const ScenarioSMS = () => {
 
   return (
     <div className="sms_page">
-      <header className="header">
-        <h1 className="header_text">АНАЛИЗ УГРОЗЫ: CASE_01</h1>
+      {/* ОБНОВЛЕННЫЙ ХЕДЕР С КНОПКОЙ НАЗАД */}
+      <header className="header" style={{ display: "flex", alignItems: "center", gap: "20px", padding: "20px 40px", background: "rgba(15, 23, 42, 0.4)", backdropFilter: "blur(10px)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+        <button 
+          onClick={() => navigate("/map")} 
+          className="back-to-map-btn"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "42px",
+            height: "42px",
+            borderRadius: "50%",
+            border: "1px solid rgba(255, 255, 255, 0.15)",
+            background: "rgba(255, 255, 255, 0.06)",
+            color: "#fff",
+            fontSize: "20px",
+            cursor: "pointer",
+            transition: "all 0.2s ease",
+            padding: "0",
+            lineHeight: "1"
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "rgba(255, 255, 255, 0.15)";
+            e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.3)";
+            e.currentTarget.style.transform = "translateX(-2px)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "rgba(255, 255, 255, 0.06)";
+            e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
+            e.currentTarget.style.transform = "translateX(0)";
+          }}
+          title="Вернуться на карту"
+        >
+          ←
+        </button>
+        <h1 className="header_text" style={{ margin: 0, fontSize: "24px", fontWeight: "800", letterSpacing: "-0.02em" }}>
+          АНАЛИЗ УГРОЗЫ И СЦЕНАРИИ SMS ВЗЛОМА
+        </h1>
       </header>
 
       <main className="content-wrapper">
@@ -110,7 +147,6 @@ const ScenarioSMS = () => {
             <p>Проверьте свою бдительность в симуляции реального времени. Одна ошибка — и ваш виртуальный счет будет обнулен.</p>
             
             <div className="stats-mini">
-              <span><ShieldCheck size={18} inline /> 5 Уровней</span>
               <span> +50 XP за успех</span>
             </div>
 

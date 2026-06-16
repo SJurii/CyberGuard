@@ -16,6 +16,8 @@ import AdminAchievementsPage from "./pages/adminAchivement/AdminAchievementsPage
 import AdminUsersPage from "./pages/adminUsersPage/adminUsersPage";
 import SqcenarioSql from "./pages/scenarioSQL/infoSQL";
 import PlayerSQL from "./pages/scenarioSQL/playerSQL";
+import ScenarioSocial from "./pages/scenarioSocial/socialInfo";
+import SocialPlayer from "./pages/scenarioSocial/ScenarioSocialPlayer";
 
 const pageVariants = {
   initial: { opacity: 0, x: -50 },
@@ -41,20 +43,18 @@ function AnimatedRoutes() {
         <Route path="/adminAchievements" element={<PageWrapper><AdminAchievementsPage /></PageWrapper>} />
         <Route path="scenarioSQL/infoSQL" element={<PageWrapper><SqcenarioSql /></PageWrapper>} />
         <Route path="scenarioSQL/playerSQL/:scenarioId" element={<PageWrapper><PlayerSQL /></PageWrapper>} />
+        <Route path="/scenario/social/info" element={<PageWrapper><ScenarioSocial /></PageWrapper>} />
+        <Route path="/scenario/social/:scenarioId" element={<PageWrapper><SocialPlayer /></PageWrapper>} />
 
-        {/* УНИВЕРСАЛЬНЫЙ ПЛЕЕР СЦЕНАРИЕВ — РАЗДЕЛЯЕМ */}
-        {/* Для SMS оставляем FakeSmsChat */}
         <Route path="/scenario/sms/:scenarioId" element={<PageWrapper><FakeSmsChat /></PageWrapper>} />
 
-        {/* Для Email ставим твой компонент плеера почты */}
         <Route path="/scenario/email/:scenarioId" element={<PageWrapper><EmailScenarioPlayer /></PageWrapper>} />
         <Route path="/admin/users" element={<PageWrapper><AdminUsersPage /></PageWrapper>} />
 
-        {/* Карта и Лидерборд */}
+
         <Route path="/map" element={<PageWrapper><MapPage /></PageWrapper>} />
         <Route path="/profile/leaderboard" element={<PageWrapper><Leaderboard /></PageWrapper>} />
 
-        {/* Профиль и Аутентификация */}
         <Route path="/login" element={<PageWrapper><Login /></PageWrapper>} />
         <Route path="/register" element={<PageWrapper><Register /></PageWrapper>} />
         <Route path="/profile" element={<PageWrapper><Profile /></PageWrapper>} />
@@ -64,7 +64,6 @@ function AnimatedRoutes() {
   );
 }
 
-// Вспомогательный компонент, чтобы не дублировать motion.div
 const PageWrapper = ({ children }) => (
   <motion.div
     variants={pageVariants}

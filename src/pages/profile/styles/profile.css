@@ -159,9 +159,33 @@
 }
 
 .back-btn {
-    background: var(--glass);
-    border: 1px solid var(--glass-border);
-    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 10px 0;
+    padding: 14px;
+    border-radius: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 1px;
+    transition: 0.3s;
+    box-sizing: border-box; /* Защита от расползания паддингов */
+    text-decoration: none !important; /* Убираем подчеркивание ссылки */
+    cursor: pointer;
+
+    /* Фоллбек: если var(--glass) пустой, сработает полупрозрачный белый (Glassmorphism) */
+    background: var(--glass, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+    color: #fff !important; /* Принудительно белый цвет текста, игнорируя другие файлы */
+    backdrop-filter: blur(10px);
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: var(--primary, #6366f1);
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
 }
 
 .logout-btn {

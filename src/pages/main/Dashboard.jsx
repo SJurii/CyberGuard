@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
-  Award, Zap, ShieldCheck, Target, Users, 
-  LayoutGrid, User, Map as MapIcon, Trophy 
+  Award, Terminal, BookOpen, 
+  LayoutGrid, User, Map as MapIcon, Trophy, Users 
 } from 'lucide-react';
 import "../main/styles/dashboard.css";
 import { useAuth } from "../../context/AuthContext";
@@ -52,71 +52,64 @@ const Dashboard = () => {
       </header>
 
       <main className="container">
+        
+        {/* ГЛАВНАЯ ПАНЕЛЬ: прогресс баллов на всю ширину */}
+        <div className="main-progress-hero stat-card">
+          <div className="card-header" style={{color: '#6366f1'}}>
+            <Award size={24} />
+            <h3>Текущий оперативный статус и очки опыта</h3>
+          </div>
+          <div className="xp-stat-hero">
+            <span className="xp-current">{xp}</span>
+            <span className="xp-total"> / {totalXp} XP</span>
+          </div>
+          <div className="xp-bar-container" style={{ height: '12px', marginTop: '25px' }}>
+            <div 
+              className="xp-bar-fill" 
+              style={{ width: `${progressPercentage}%` }}
+            ></div>
+          </div>
+          <p style={{marginTop: '20px', color: '#94a3b8', fontSize: '14px', fontWeight: '500'}}>
+             До верификации следующего квалификационного ранга осталось {totalXp - xp} XP
+          </p>
+        </div>
+
+        {/* СЕТКА СТАТИЧЕСКОГО ИНФО-КОНТЕНТА */}
         <div className="dashboard-grid">
           
-          {/* 1. Карточка рейтинга (XP) */}
+          {/* Статичная инфо-карточка 1 */}
           <div className="stat-card">
-            <div className="card-header">
-              <Award size={20} />
-              <h3>Ваш прогресс</h3>
+            <div className="card-header" style={{color: '#f43f5e'}}>
+              <Terminal size={20} />
+              <h3>Актуальные киберугрозы</h3>
             </div>
-            <div className="xp-stat animate-fade">
-              <div className="xp-current">{xp}</div>
-              <div className="xp-total"> / {totalXp} XP</div>
-            </div>
-            <div className="xp-bar-container">
-              <div 
-                className="xp-bar-fill" 
-                style={{ width: `${progressPercentage}%` }}
-              ></div>
-            </div>
-            <p style={{marginTop: '15px', color: '#94a3b8', textAlign: 'center', fontSize: '13px'}}>
-               До следующего уровня осталось {totalXp - xp} XP
-            </p>
+            <ul style={{ paddingLeft: '0', listStyle: 'none', color: '#94a3b8', fontSize: '14px', lineHeight: '2' }}>
+              <li>⚠️ <strong style={{color: '#fff'}}>Email:</strong> Потоковые фишинг-атаки на HR сектор.</li>
+              <li>⚠️ <strong style={{color: '#fff'}}>SMS:</strong> Маскировка под сервисы доставки отправлений.</li>
+              <li>⚠️ <strong style={{color: '#fff'}}>SQL:</strong> Инъекции типа Blind/Time-based в старых СУБД.</li>
+            </ul>
           </div>
 
-          {/* 2. Карточка "Быстрый старт" */}
-          <div className="cta-card stat-card">
-            <div className="card-header" style={{color: '#a855f7'}}>
-              <Target size={20} />
-              <h3>Следующая миссия</h3>
-            </div>
-            <p>Вы остановились на кейсе: <strong>SQL Инъекция: Взлом БД</strong>.</p>
-            <button 
-              className="start-btn" 
-              onClick={() => navigate(`/scenario/player/sql_case_02`)}
-            >
-              <Zap size={16} style={{marginRight: '8px', display: 'inline'}}/> Продолжить
-            </button>
-          </div>
-
-          {/* 3. Статистика защит */}
+          {/* Статичная инфо-карточка 2 */}
           <div className="stat-card">
              <div className="card-header" style={{color: '#10b981'}}>
-               <ShieldCheck size={20}/>
-               <h3>Статистика защит</h3>
+               <BookOpen size={20}/>
+               <h3>Памятка киберинженера</h3>
              </div>
-             <div className="xp-stat animate-fade">
-                 <div className="xp-current" style={{color: '#10b981'}}>12</div>
-                 <div className="xp-total"> кейсов решено</div>
-             </div>
-             <p style={{marginTop: '15px', color: '#94a3b8', fontSize: '13px'}}>
-                Вы отразили 90% виртуальных атак.
+             <p style={{ color: '#94a3b8', fontSize: '14px', lineHeight: '1.6' }}>
+                Используйте вкладку <strong>«Карта Системы»</strong> в правом верхнем углу экрана для доступа ко всем доступным симуляциям и интерактивным сценариям тренировки атаки/защиты.
              </p>
           </div>
         </div>
 
-        {/* 4. СЕКЦИЯ ДЛЯ АДМИНА */}
+        {/* 4. СЕКЦИЯ ДЛЯ АДМИНА — ОСТАЛАСЬ БЕЗ ИЗМЕНЕНИЙ */}
         {isAdmin && (
           <div className="admin-dashboard-section animate-fade">
-            
             <h3>Центр Управления (ADMIN)</h3>
-
             <p style={{color: '#94a3b8', marginBottom: '20px', fontSize: '14px'}}>
               У вас есть доступ к редактированию контента и управлению системой.
             </p>
 
-            {/* ОДНА КНОПКА УПРАВЛЕНИЯ */}
             <button
               className="admin-btn main-admin-btn"
               onClick={() => setAdminOpen(!adminOpen)}
@@ -125,37 +118,24 @@ const Dashboard = () => {
               Управление
             </button>
 
-            {/* РАСКРЫВАЮЩЕЕСЯ МЕНЮ */}
             {adminOpen && (
               <div className="admin-actions expanded">
-                
-                <button
-                  className="admin-btn"
-                  onClick={() => navigate('/admin/users')}
-                >
+                <button className="admin-btn" onClick={() => navigate('/admin/users')}>
                   <Users size={16} style={{marginRight: '8px', display: 'inline'}}/>
                   Управление пользователями
                 </button>
 
-                <button
-                  className="admin-btn"
-                  onClick={() => navigate('/map', { state: { openEditor: true } })}
-                >
+                <button className="admin-btn" onClick={() => navigate('/map', { state: { openEditor: true } })}>
                   <MapIcon size={16} style={{marginRight: '8px', display: 'inline'}}/>
                   Сценарии (редактор)
                 </button>
 
-                <button
-                  className="admin-btn"
-                  onClick={() => navigate('/adminAchievements')}
-                >
+                <button className="admin-btn" onClick={() => navigate('/adminAchievements')}>
                   <Trophy size={16} style={{marginRight: '8px', display: 'inline'}}/>
                   Добавление достижений
                 </button>
-
               </div>
             )}
-
           </div>
         )}
       </main>

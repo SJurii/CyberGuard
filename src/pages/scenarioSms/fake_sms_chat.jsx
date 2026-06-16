@@ -112,16 +112,13 @@ export default function FakeSmsChat() {
   const nextPath = getNextScenarioPath();
 
   const handleFinishOrNext = async (path) => {
-    // Вызываем начисление баллов и передаем путь для навигации после успеха
     await finishSession(path);
   };
 
   const finishSession = async (path = null) => {
-    // 1. Достаем строку userData и парсим её в объект
     const rawUserData = localStorage.getItem("userData");
     const userData = rawUserData ? JSON.parse(rawUserData) : null;
     
-    // 2. Извлекаем ID из объекта (согласно снимку экрана 2026-05-01 в 23.53.25.png)
     const userId = userData?.id; 
     const token = localStorage.getItem("userToken");
 
@@ -131,8 +128,7 @@ export default function FakeSmsChat() {
       return;
     }
 
-    // 3. Рассчитываем баллы на основе риска
-    const pointsToAward = Number(totalRisk) > 50 ? 10 : 50;
+    const pointsToAward = Number(totalRisk) > 30 ? 10 : 50;
 
     try {
       const response = await fetch(`http://localhost:8080/api/profile/${userId}/addPoints`, {
@@ -150,11 +146,8 @@ export default function FakeSmsChat() {
       if (!response.ok) throw new Error("Ошибка при начислении баллов");
       
       toast.success(`Курс пройден! +${pointsToAward} XP`);
-      
-      // Очищаем локальный риск только после успешного сохранения на бэке
       localStorage.removeItem("totalRisk");
 
-      // Навигация: либо к следующему сценарию, либо в список
       if (path) {
         navigate(path);
       } else {
@@ -171,11 +164,46 @@ export default function FakeSmsChat() {
 
   return (
     <div className={`sms-chat-container ${totalRisk >= 70 ? "critical-alert" : ""}`}>
-      <div className="scenario-top-bar">
-        <button onClick={() => navigate("/scenario_sms")} className="back-btn">←</button>
-        <div className="scenario-info">
+      <div className="scenario-top-bar" style={{ display: "flex", alignItems: "center", gap: "16px", padding: "15px 20px" }}>
+        
+        {/* Кнопка НАЗАД стилизована под круглый кибер-элемент */}
+        <button 
+          onClick={() => navigate("/scenario_sms")} 
+          className="back-btn"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "40px",
+            height: "40px",
+            borderRadius: "50%",
+            border: "1px solid rgba(255, 255, 255, 0.15)",
+            background: "rgba(255, 255, 255, 0.06)",
+            color: "#fff",
+            fontSize: "20px",
+            cursor: "pointer",
+            transition: "all 0.2s ease",
+            backdropFilter: "blur(8px)",
+            padding: "0",
+            lineHeight: "1"
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "rgba(255, 255, 255, 0.15)";
+            e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.3)";
+            e.currentTarget.style.transform = "translateX(-2px)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "rgba(255, 255, 255, 0.06)";
+            e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
+            e.currentTarget.style.transform = "translateX(0)";
+          }}
+        >
+          ←
+        </button>
+
+        <div className="scenario-info" style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
           <span className="type-tag">{scenario.type}</span>
-          <h2>{scenario.title}</h2>
+          <h2 style={{ margin: "0", fontSize: "18px", fontWeight: "700" }}>{scenario.title}</h2>
         </div>
       </div>
 
@@ -196,29 +224,43 @@ export default function FakeSmsChat() {
               </div>
             </div>
           ))}
+          
+          {ended && !isTyping && (
+            <div className="message-row system info-summary-row">
+              <div className="bubble summary-bubble" style={{ border: '1px dashed #6366f1', background: 'rgba(99, 102, 241, 0.05)' }}>
+                <span className="sender-name">Система</span>
+                <p><strong>Сценарий успешно завершен!</strong></p>
+                <p>Ваш итоговый показатель риска в этой сессии составил: {currentRisk}%</p>
+              </div>
+            </div>
+          )}
+
           {isTyping && <div className="typing-indicator"><span>.</span><span>.</span><span>.</span></div>}
           <div ref={chatEndRef} />
         </div>
 
-        {!ended && !isTyping && (
-          <div className="choices">
-            {answers.map((a, i) => (
-              <button key={i} onClick={() => sendAnswer(a)}>{a.text}</button>
-            ))}
-          </div>
-        )}
+        <div className="chat-controls-footer">
+          {!ended && !isTyping && (
+            <div className="choices">
+              {answers.map((a, i) => (
+                <button key={i} onClick={() => sendAnswer(a)}>{a.text}</button>
+              ))}
+            </div>
+          )}
 
-        {ended && (
-          <div className="result-overlay">
-            <div className="result-card">
-              <h3>Сценарий завершен</h3>
-              <p>Набранный риск: {currentRisk}%</p>
-              <button className="start-btn" onClick={() => handleFinishOrNext(nextPath)}>
-                {nextPath ? "Далее" : "Завершить"}
+          {ended && !isTyping && (
+            <div className="finish-action-area" style={{ padding: '15px', display: 'flex', justifyContent: 'center', width: '100%' }}>
+              <button 
+                className="start-btn" 
+                onClick={() => handleFinishOrNext(nextPath)}
+                style={{ width: '100%', maxWidth: '400px', padding: '14px', borderRadius: '12px', fontWeight: 'bold' }}
+              >
+                {nextPath ? "Далее ➔" : "Завершить и сохранить"}
               </button>
             </div>
-          </div>
-        )}
+          )}
+        </div>
+
       </div>
     </div>
   );
